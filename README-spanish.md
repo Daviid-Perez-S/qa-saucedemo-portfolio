@@ -38,9 +38,9 @@ Desde la raíz del proyecto, ejecutar:
 mvn test
 ```
 
-La única prueba TestNG implementa `TC-LOGIN-001` con los datos públicos `TD-LOGIN-01`: abrir Chrome, iniciar sesión, verificar el título Products, la ruta de inventario y el catálogo visible, y cerrar el navegador incluso si la prueba falla. Las assertions están en `LoginTest`; `LoginPage` y `ProductsPage` contienen localizadores, interacciones, esperas y consultas del estado.
+La prueba positiva TestNG implementa `TC-LOGIN-001` con los datos públicos `TD-LOGIN-01`: abrir Chrome, iniciar sesión, verificar el título Products, la ruta de inventario y el catálogo visible, y cerrar el navegador incluso si la prueba falla. `TC-LOGIN-002` utiliza `TD-LOGIN-02` (`standard_user` / `invalid_password`) para verificar el error de credenciales y que se rechaza el acceso mientras la página y el formulario de login siguen visibles. Cada prueba abre y cierra su propio navegador. Las assertions están en `LoginTest`; `LoginPage` y `ProductsPage` contienen localizadores, interacciones, esperas y consultas del estado.
 
-El proyecto utiliza Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0 y Maven Surefire Plugin 3.6.0. Los otros 14 casos están pendientes. Los resultados estándar de ejecución están disponibles en `target/surefire-reports/`.
+El proyecto utiliza Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0 y Maven Surefire Plugin 3.6.0. Los otros 13 casos están pendientes. Los resultados estándar de ejecución están disponibles en `target/surefire-reports/`.
 
 ## Aplicación bajo prueba
 
