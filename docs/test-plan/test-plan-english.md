@@ -30,7 +30,7 @@ The initial suite contains 15 functional test cases. All 15 are intended to be a
 | End-to-End | Complete a purchase and log out | TC-E2E-001 | 1 |
 | **Total** |  |  | **15** |
 
-Detailed scenarios, steps, expected results, execution fields, and test data are maintained in [the English QA workbook](qa-test-documentation-english.xlsx). The Spanish version is [the Spanish QA workbook](qa-test-documentation-spanish.xlsx).
+Detailed scenarios, steps, expected results, execution fields, and test data are maintained in [the English QA workbook](../test-artifacts/qa-test-documentation-english.xlsx). The Spanish version is [the Spanish QA workbook](../test-artifacts/qa-test-documentation-spanish.xlsx).
 
 ## 4. Out of scope
 

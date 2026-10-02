@@ -30,7 +30,7 @@ La suite inicial contiene 15 casos de prueba funcionales. Se planea automatizar 
 | End-to-End | Completar compra y cerrar sesión | TC-E2E-001 | 1 |
 | **Total** |  |  | **15** |
 
-Los escenarios detallados, pasos, resultados esperados, campos de ejecución y datos de prueba están en [el libro de QA en español](qa-test-documentation-spanish.xlsx). También está disponible [la versión en inglés](qa-test-documentation-english.xlsx).
+Los escenarios detallados, pasos, resultados esperados, campos de ejecución y datos de prueba están en [el libro de QA en español](../test-artifacts/qa-test-documentation-spanish.xlsx). También está disponible [la versión en inglés](../test-artifacts/qa-test-documentation-english.xlsx).
 
 ## 4. Fuera del alcance
 

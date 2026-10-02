@@ -4,7 +4,7 @@ Proyecto inicial de portafolio QA para planear y automatizar los flujos principa
 
 Esta versión en español es complementaria; GitHub mostrará `README.md` en inglés como portada principal. [Ver README principal](README.md).
 
-**Responsable:** David Pérez · **Estado:** documentación QA preparada; el framework de automatización está planeado.
+**Responsable:** David Pérez · **Estado:** documentación QA preparada; automatización inicial de login implementada.
 
 ## Objetivos del proyecto
 
@@ -17,8 +17,8 @@ API Testing se planea como proyecto de portafolio separado. El alcance inicial e
 
 ## Documentación
 
-- [Plan de pruebas — Español](docs/test-plan-spanish.md) · [Libro QA — Español](docs/qa-test-documentation-spanish.xlsx)
-- [Test Plan — English](docs/test-plan-english.md) · [QA workbook — English](docs/qa-test-documentation-english.xlsx)
+- [Plan de pruebas — Español](docs/test-plan/test-plan-spanish.md) · [Libro QA — Español](docs/test-artifacts/qa-test-documentation-spanish.xlsx)
+- [Test Plan — English](docs/test-plan/test-plan-english.md) · [QA workbook — English](docs/test-artifacts/qa-test-documentation-english.xlsx)
 - [Instrucciones para agentes de programación](AGENTS.md)
 - [README in English](README.md)
 
@@ -27,6 +27,20 @@ API Testing se planea como proyecto de portafolio separado. El alcance inicial e
 Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chrome
 
 El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y Google Chrome 154.0.8037.93. La versión de Chrome es una referencia temporal y puede cambiar.
+
+## Ejecutar la prueba automatizada inicial
+
+Requisitos: JDK 25, Maven, Google Chrome y acceso a internet a SauceDemo. Maven descarga las dependencias; Selenium Manager resuelve ChromeDriver y puede necesitar internet en la primera ejecución.
+
+Desde la raíz del proyecto, ejecutar:
+
+```shell
+mvn test
+```
+
+La única prueba TestNG implementa `TC-LOGIN-001` con los datos públicos `TD-LOGIN-01`: abrir Chrome, iniciar sesión, verificar el título Products, la ruta de inventario y el catálogo visible, y cerrar el navegador incluso si la prueba falla. Las assertions están en `LoginTest`; `LoginPage` y `ProductsPage` contienen localizadores, interacciones, esperas y consultas del estado.
+
+El proyecto utiliza Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0 y Maven Surefire Plugin 3.6.0. Los otros 14 casos están pendientes. Los resultados estándar de ejecución están disponibles en `target/surefire-reports/`.
 
 ## Aplicación bajo prueba
 
