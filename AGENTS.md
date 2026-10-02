@@ -22,3 +22,11 @@
 - Keep the English and Spanish project documents aligned when either version changes.
 - Do not commit, push, publish, or change GitHub settings unless David asks.
 - Update this file when project decisions or working conventions change; routine code progress does not require an automatic update.
+
+## Documentation Maintenance
+
+- Keep `README.md` and `README-spanish.md` synchronized.
+- When a test case is successfully automated and verified, update its status in the README automation coverage table and update the automation progress counter.
+- Do not duplicate detailed test steps, test data, or expected results in the README; keep those details in the QA test artifacts.
+- Keep implementation details separate from test coverage information.
+- Update documentation only when it reflects the actual verified state of the project.
