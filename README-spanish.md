@@ -28,9 +28,55 @@ Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chr
 
 El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y Google Chrome 154.0.8037.93. La versión de Chrome es una referencia temporal y puede cambiar.
 
-## Ejecutar la prueba automatizada inicial
+## Cobertura de Automatización
 
-Requisitos: JDK 25, Maven, Google Chrome y acceso a internet a SauceDemo. Maven descarga las dependencias; Selenium Manager resuelve ChromeDriver y puede necesitar internet en la primera ejecución.
+**Progreso de automatización: 4 / 15 casos de prueba**
+
+| ID de caso de prueba | Escenario | Estado |
+|---|---|---|
+| TC-LOGIN-001 | Iniciar sesión con credenciales válidas | Automatizado |
+| TC-LOGIN-002 | Iniciar sesión con contraseña incorrecta | Automatizado |
+| TC-LOGIN-003 | Iniciar sesión con un usuario inexistente | Automatizado |
+| TC-LOGIN-004 | Iniciar sesión con un usuario bloqueado | Automatizado |
+| TC-PROD-001 | Visualizar el catálogo de productos | Planeado |
+| TC-PROD-002 | Ordenar productos por precio de menor a mayor | Planeado |
+| TC-PROD-003 | Agregar un producto al carrito | Planeado |
+| TC-CART-001 | Verificar un producto agregado en el carrito | Planeado |
+| TC-CART-002 | Eliminar un producto del carrito | Planeado |
+| TC-CART-003 | Continuar del carrito al checkout | Planeado |
+| TC-CHECK-001 | Completar checkout con información válida | Planeado |
+| TC-CHECK-002 | Validar nombre vacío | Planeado |
+| TC-CHECK-003 | Validar apellido vacío | Planeado |
+| TC-CHECK-004 | Validar código postal vacío | Planeado |
+| TC-E2E-001 | Completar una compra y cerrar sesión | Planeado |
+
+El estado refleja la implementación en el código, no un resultado de ejecución. Consulta el [libro QA en español](docs/test-artifacts/qa-test-documentation-spanish.xlsx) para los pasos completos, datos de prueba, resultados esperados y registros de ejecución, y el [Plan de Pruebas](docs/test-plan/test-plan-spanish.md) para el alcance y enfoque.
+
+## Arquitectura de Automatización
+
+El proyecto utiliza Page Object Model con una separación sencilla de responsabilidades:
+
+- `LoginPage` y `ProductsPage` contienen localizadores, interacciones, esperas explícitas y consultas del estado de las páginas.
+- `LoginTest` contiene los escenarios y las assertions, con cada prueba vinculada a su ID de caso aprobado.
+- `@BeforeMethod` abre un navegador Chrome nuevo y navega a SauceDemo para cada prueba. `@AfterMethod(alwaysRun = true)` llama a `quit()` cuando existe un driver, incluso después de fallos en las pruebas.
+- Selenium Manager resuelve ChromeDriver automáticamente.
+
+Estructura actual de automatización:
+
+```text
+src/test/java/com/david/qa/
+├── pages/
+│   ├── LoginPage.java
+│   └── ProductsPage.java
+└── tests/
+    └── LoginTest.java
+```
+
+El proyecto utiliza Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0 y Maven Surefire Plugin 3.6.0.
+
+## Ejecutar las pruebas automatizadas
+
+Requisitos: JDK 25, Maven, Google Chrome y acceso a internet a SauceDemo. Maven descarga las dependencias; Selenium Manager puede necesitar internet en la primera ejecución.
 
 Desde la raíz del proyecto, ejecutar:
 
@@ -38,9 +84,7 @@ Desde la raíz del proyecto, ejecutar:
 mvn test
 ```
 
-La prueba positiva TestNG implementa `TC-LOGIN-001` con los datos públicos `TD-LOGIN-01`: abrir Chrome, iniciar sesión, verificar el título Products, la ruta de inventario y el catálogo visible, y cerrar el navegador incluso si la prueba falla. `TC-LOGIN-002` utiliza `TD-LOGIN-02` (`standard_user` / `invalid_password`) para verificar el error de credenciales y que se rechaza el acceso mientras la página y el formulario de login siguen visibles. `TC-LOGIN-003` utiliza `TD-LOGIN-03` (`non_existing_user` / `secret_sauce`) para verificar que se rechaza a un usuario desconocido con el error de credenciales y permanece en el formulario de login visible. `TC-LOGIN-004` utiliza `TD-LOGIN-04` (`locked_out_user` / `secret_sauce`) para verificar que se rechaza el acceso con el mensaje específico de usuario bloqueado y el formulario de login sigue visible. Cada prueba abre y cierra su propio navegador. Las assertions están en `LoginTest`; `LoginPage` y `ProductsPage` contienen localizadores, interacciones, esperas y consultas del estado.
-
-El proyecto utiliza Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0 y Maven Surefire Plugin 3.6.0. Los otros 11 casos están pendientes. Los resultados estándar de ejecución están disponibles en `target/surefire-reports/`.
+Los resultados estándar de ejecución están disponibles en `target/surefire-reports/`.
 
 ## Aplicación bajo prueba
 

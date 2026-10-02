@@ -26,11 +26,57 @@ API testing is planned as a separate portfolio project. The initial scope exclud
 
 Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chrome
 
-The test environment currently documented is a personal laptop running Windows 11 25H2 and Google Chrome 154.0.8037.93. The Chrome version is a snapshot and may change.
+The test environment currently documented is a personal laptop running Windows 11 25H2 and Google Chrome 154. The Chrome version is a snapshot and may change.
 
-## Run the initial automated test
+## Automation Coverage
 
-Requirements: JDK 25, Maven, Google Chrome, and internet access to SauceDemo. Maven downloads dependencies; Selenium Manager resolves ChromeDriver and may need internet access on the first run.
+**Automation progress: 4 / 15 test cases**
+
+| Test Case ID | Scenario | Status |
+|---|---|---|
+| TC-LOGIN-001 | Login with valid credentials | Automated |
+| TC-LOGIN-002 | Login with an incorrect password | Automated |
+| TC-LOGIN-003 | Login with an unknown user | Automated |
+| TC-LOGIN-004 | Login with a locked user | Automated |
+| TC-PROD-001 | View the product catalog | Planned |
+| TC-PROD-002 | Sort products by price, low to high | Planned |
+| TC-PROD-003 | Add a product to the cart | Planned |
+| TC-CART-001 | Verify an added product in the cart | Planned |
+| TC-CART-002 | Remove a product from the cart | Planned |
+| TC-CART-003 | Continue from the cart to checkout | Planned |
+| TC-CHECK-001 | Complete checkout with valid information | Planned |
+| TC-CHECK-002 | Validate missing first name | Planned |
+| TC-CHECK-003 | Validate missing last name | Planned |
+| TC-CHECK-004 | Validate missing postal code | Planned |
+| TC-E2E-001 | Complete a purchase and log out | Planned |
+
+Status reflects implementation in the code, not an execution result. See the [English QA workbook](docs/test-artifacts/qa-test-documentation-english.xlsx) for complete steps, test data, expected results, and execution records, and the [Test Plan](docs/test-plan/test-plan-english.md) for scope and approach.
+
+## Automation Architecture
+
+The project uses Page Object Model with a small separation of responsibilities:
+
+- `LoginPage` and `ProductsPage` contain locators, interactions, explicit waits, and page state queries.
+- `LoginTest` contains the test scenarios and assertions, with each test linked to its approved test case ID.
+- `@BeforeMethod` opens a fresh Chrome browser and navigates to SauceDemo for each test. `@AfterMethod(alwaysRun = true)` calls `quit()` when a driver exists, including after test failures.
+- Selenium Manager resolves ChromeDriver automatically.
+
+Current automation structure:
+
+```text
+src/test/java/com/david/qa/
+├── pages/
+│   ├── LoginPage.java
+│   └── ProductsPage.java
+└── tests/
+    └── LoginTest.java
+```
+
+The project uses Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0, and Maven Surefire Plugin 3.6.0.
+
+## Run the automated tests
+
+Requirements: JDK 25, Maven, Google Chrome, and internet access to SauceDemo. Maven downloads dependencies; Selenium Manager may need internet access on the first run.
 
 From the project root, run:
 
@@ -38,9 +84,7 @@ From the project root, run:
 mvn test
 ```
 
-The positive TestNG test implements `TC-LOGIN-001` using public test data `TD-LOGIN-01`: open Chrome, log in, verify the Products title, inventory path, and visible catalog, then close the browser even if the test fails. `TC-LOGIN-002` uses `TD-LOGIN-02` (`standard_user` / `invalid_password`) to verify the credentials error and that access is denied while the login page and form remain visible. `TC-LOGIN-003` uses `TD-LOGIN-03` (`non_existing_user` / `secret_sauce`) to verify that an unknown user is rejected with the credentials error and remains on the visible login form. `TC-LOGIN-004` uses `TD-LOGIN-04` (`locked_out_user` / `secret_sauce`) to verify that access is denied with the specific locked-user message and the login form remains visible. Each test opens and closes its own browser. Assertions are in `LoginTest`; `LoginPage` and `ProductsPage` contain locators, interactions, waits, and state queries.
-
-The project uses Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0, and Maven Surefire Plugin 3.6.0. The remaining 11 cases are pending. Standard execution results are available in `target/surefire-reports/`.
+Standard execution results are available in `target/surefire-reports/`.
 
 ## Application under test
 
