@@ -62,6 +62,20 @@ public class LoginTest {
                 "The login form should remain visible after access is denied.");
     }
 
+    @Test(description = "TC-LOGIN-004: Login with a locked user (TD-LOGIN-04)")
+    public void lockedUserIsRejected() {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login("locked_out_user", "secret_sauce");
+
+        Assert.assertEquals(loginPage.getErrorMessage(),
+                "Epic sadface: Sorry, this user has been locked out.",
+                "A locked user should receive the specific locked-user message.");
+        Assert.assertEquals(URI.create(driver.getCurrentUrl()).getPath(), "/",
+                "Rejected login should keep the user on the login page.");
+        Assert.assertTrue(loginPage.isLoginFormDisplayed(),
+                "The login form should remain visible after access is denied.");
+    }
+
     @AfterMethod(alwaysRun = true)
     public void tearDown() {
         if (driver != null) {
