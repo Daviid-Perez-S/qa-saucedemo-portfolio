@@ -38,9 +38,9 @@ From the project root, run:
 mvn test
 ```
 
-The positive TestNG test implements `TC-LOGIN-001` using public test data `TD-LOGIN-01`: open Chrome, log in, verify the Products title, inventory path, and visible catalog, then close the browser even if the test fails. `TC-LOGIN-002` uses `TD-LOGIN-02` (`standard_user` / `invalid_password`) to verify the credentials error and that access is denied while the login page and form remain visible. Each test opens and closes its own browser. Assertions are in `LoginTest`; `LoginPage` and `ProductsPage` contain locators, interactions, waits, and state queries.
+The positive TestNG test implements `TC-LOGIN-001` using public test data `TD-LOGIN-01`: open Chrome, log in, verify the Products title, inventory path, and visible catalog, then close the browser even if the test fails. `TC-LOGIN-002` uses `TD-LOGIN-02` (`standard_user` / `invalid_password`) to verify the credentials error and that access is denied while the login page and form remain visible. `TC-LOGIN-003` uses `TD-LOGIN-03` (`non_existing_user` / `secret_sauce`) to verify that an unknown user is rejected with the credentials error and remains on the visible login form. Each test opens and closes its own browser. Assertions are in `LoginTest`; `LoginPage` and `ProductsPage` contain locators, interactions, waits, and state queries.
 
-The project uses Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0, and Maven Surefire Plugin 3.6.0. The remaining 13 cases are pending. Standard execution results are available in `target/surefire-reports/`.
+The project uses Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0, and Maven Surefire Plugin 3.6.0. The remaining 12 cases are pending. Standard execution results are available in `target/surefire-reports/`.
 
 ## Application under test
 

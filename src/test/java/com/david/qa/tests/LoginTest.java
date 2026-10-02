@@ -48,6 +48,20 @@ public class LoginTest {
                 "The login form should remain visible after access is denied.");
     }
 
+    @Test(description = "TC-LOGIN-003: Login with an unknown user (TD-LOGIN-03)")
+    public void unknownUserIsRejected() {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login("non_existing_user", "secret_sauce");
+
+        Assert.assertEquals(loginPage.getErrorMessage(),
+                "Epic sadface: Username and password do not match any user in this service",
+                "An unknown user should produce a clear credentials error.");
+        Assert.assertEquals(URI.create(driver.getCurrentUrl()).getPath(), "/",
+                "Rejected login should keep the user on the login page.");
+        Assert.assertTrue(loginPage.isLoginFormDisplayed(),
+                "The login form should remain visible after access is denied.");
+    }
+
     @AfterMethod(alwaysRun = true)
     public void tearDown() {
         if (driver != null) {
