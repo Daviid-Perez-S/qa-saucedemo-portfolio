@@ -4,6 +4,7 @@ import java.net.URI;
 import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,6 +15,8 @@ public class CheckoutInformationPage {
     private final By firstNameInput = By.id("first-name");
     private final By lastNameInput = By.id("last-name");
     private final By postalCodeInput = By.id("postal-code");
+    private final By continueButton = By.id("continue");
+    private final By errorMessage = By.cssSelector("[data-test='error']");
 
     public CheckoutInformationPage(WebDriver driver) {
         this.driver = driver;
@@ -40,5 +43,25 @@ public class CheckoutInformationPage {
         return driver.findElement(firstNameInput).isDisplayed()
                 && driver.findElement(lastNameInput).isDisplayed()
                 && driver.findElement(postalCodeInput).isDisplayed();
+    }
+
+    public void fillInformation(String firstName, String lastName, String postalCode) {
+        WebElement firstNameField = wait.until(ExpectedConditions.visibilityOfElementLocated(firstNameInput));
+        firstNameField.clear();
+        firstNameField.sendKeys(firstName);
+        WebElement lastNameField = wait.until(ExpectedConditions.visibilityOfElementLocated(lastNameInput));
+        lastNameField.clear();
+        lastNameField.sendKeys(lastName);
+        WebElement postalCodeField = wait.until(ExpectedConditions.visibilityOfElementLocated(postalCodeInput));
+        postalCodeField.clear();
+        postalCodeField.sendKeys(postalCode);
+    }
+
+    public void continueToOverview() {
+        wait.until(ExpectedConditions.elementToBeClickable(continueButton)).click();
+    }
+
+    public String getErrorMessage() {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessage)).getText();
     }
 }
