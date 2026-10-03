@@ -60,7 +60,8 @@ The project uses Page Object Model with a small separation of responsibilities:
 - `LoginTest`, `ProductsTest`, and `CartTest` contain the test scenarios and assertions, with each test linked to its approved test case ID.
 - `@BeforeMethod` opens a fresh Chrome browser and navigates to SauceDemo for each test. `@AfterMethod(alwaysRun = true)` calls `quit()` when a driver exists, including after test failures.
 - `ProductsTest` logs in and waits for Products during setup; its three cases run independently, each with a fresh browser.
-- `CartTest` prepares a cart with one product for each independent case and disables password manager prompts in its Chrome session.
+- `CartTest` prepares a cart with one product for each independent case.
+- `DriverFactory.createChromeDriver()` centralizes Chrome creation and disables password saving and compromised-password prompts in every test browser. Each call creates a new WebDriver; setup and teardown stay in the test classes, without a `BaseTest`.
 - `CheckoutInformationPage` only verifies the destination of the Cart checkout navigation; Checkout test cases remain planned.
 - Selenium Manager resolves ChromeDriver automatically.
 
@@ -68,6 +69,8 @@ Current automation structure:
 
 ```text
 src/test/java/com/david/qa/
+├── driver/
+│   └── DriverFactory.java
 ├── pages/
 │   ├── LoginPage.java
 │   ├── ProductsPage.java

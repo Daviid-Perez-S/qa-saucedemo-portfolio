@@ -1,5 +1,6 @@
 package com.david.qa.tests;
 
+import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
 import java.math.BigDecimal;
@@ -7,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -19,7 +19,7 @@ public class ProductsTest {
 
     @BeforeMethod
     public void setUp() {
-        driver = new ChromeDriver();
+        driver = DriverFactory.createChromeDriver();
         driver.get("https://www.saucedemo.com/");
         new LoginPage(driver).login("standard_user", "secret_sauce");
         productsPage = new ProductsPage(driver);

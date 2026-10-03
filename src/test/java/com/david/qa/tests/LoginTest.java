@@ -1,10 +1,10 @@
 package com.david.qa.tests;
 
+import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
 import java.net.URI;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -15,7 +15,7 @@ public class LoginTest {
 
     @BeforeMethod
     public void setUp() {
-        driver = new ChromeDriver();
+        driver = DriverFactory.createChromeDriver();
         driver.get("https://www.saucedemo.com/");
     }
 

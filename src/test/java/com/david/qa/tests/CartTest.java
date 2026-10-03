@@ -1,15 +1,13 @@
 package com.david.qa.tests;
 
+import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.CartPage;
 import com.david.qa.pages.CheckoutInformationPage;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -22,12 +20,7 @@ public class CartTest {
 
     @BeforeMethod
     public void setUp() {
-        ChromeOptions options = new ChromeOptions();
-        options.setExperimentalOption("prefs", Map.of(
-                "credentials_enable_service", false,
-                "profile.password_manager_enabled", false,
-                "profile.password_manager_leak_detection", false));
-        driver = new ChromeDriver(options);
+        driver = DriverFactory.createChromeDriver();
         driver.get("https://www.saucedemo.com/");
         new LoginPage(driver).login("standard_user", "secret_sauce");
         ProductsPage productsPage = new ProductsPage(driver);
