@@ -1,5 +1,6 @@
 package com.david.qa.pages;
 
+import java.net.URI;
 import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +18,17 @@ public class LoginPage {
     public LoginPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+
+    public void waitUntilLoaded() {
+        wait.until(driver -> URI.create(driver.getCurrentUrl()).getPath().equals("/"));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(usernameInput));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(passwordInput));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(loginButton));
+    }
+
+    public String getPath() {
+        return URI.create(driver.getCurrentUrl()).getPath();
     }
 
     public void login(String username, String password) {

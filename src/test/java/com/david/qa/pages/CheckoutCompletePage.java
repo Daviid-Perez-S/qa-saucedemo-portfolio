@@ -12,6 +12,8 @@ public class CheckoutCompletePage {
     private final WebDriverWait wait;
     private final By title = By.cssSelector("[data-test='title']");
     private final By confirmationHeader = By.cssSelector("[data-test='complete-header']");
+    private final By menuButton = By.id("react-burger-menu-btn");
+    private final By logoutLink = By.id("logout_sidebar_link");
 
     public CheckoutCompletePage(WebDriver driver) {
         this.driver = driver;
@@ -34,5 +36,10 @@ public class CheckoutCompletePage {
 
     public String getConfirmationHeader() {
         return driver.findElement(confirmationHeader).getText();
+    }
+
+    public void logout() {
+        wait.until(ExpectedConditions.elementToBeClickable(menuButton)).click();
+        wait.until(ExpectedConditions.elementToBeClickable(logoutLink)).click();
     }
 }

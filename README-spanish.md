@@ -4,7 +4,7 @@ Proyecto inicial de portafolio QA para planear y automatizar los flujos principa
 
 Esta versión en español es complementaria; GitHub mostrará `README.md` en inglés como portada principal. [Ver README principal](README.md).
 
-**Responsable:** David Pérez · **Estado:** documentación QA preparada; automatización de Login, Products, Cart y Checkout implementada.
+**Responsable:** David Pérez · **Estado:** documentación QA preparada; los 15 casos funcionales iniciales están automatizados y verificados.
 
 ## Objetivos del proyecto
 
@@ -30,7 +30,7 @@ El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y 
 
 ## Cobertura de Automatización
 
-**Progreso de automatización: 14 / 15 casos de prueba**
+**Progreso de automatización: 15 / 15 casos de prueba**
 
 | ID de caso de prueba | Escenario | Estado |
 |---|---|---|
@@ -48,7 +48,7 @@ El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y 
 | TC-CHECK-002 | Validar nombre vacío | Automatizado |
 | TC-CHECK-003 | Validar apellido vacío | Automatizado |
 | TC-CHECK-004 | Validar código postal vacío | Automatizado |
-| TC-E2E-001 | Completar una compra y cerrar sesión | Planeado |
+| TC-E2E-001 | Completar una compra y cerrar sesión | Automatizado |
 
 El estado refleja la implementación en el código, no un resultado de ejecución. Consulta el [libro QA en español](docs/test-artifacts/qa-test-documentation-spanish.xlsx) para los pasos completos, datos de prueba, resultados esperados y registros de ejecución, y el [Plan de Pruebas](docs/test-plan/test-plan-spanish.md) para el alcance y enfoque.
 
@@ -57,13 +57,14 @@ El estado refleja la implementación en el código, no un resultado de ejecució
 El proyecto utiliza Page Object Model con una separación sencilla de responsabilidades:
 
 - `LoginPage`, `ProductsPage`, `CartPage`, `CheckoutInformationPage`, `CheckoutOverviewPage` y `CheckoutCompletePage` contienen localizadores, interacciones, esperas explícitas y consultas del estado de las páginas.
-- `LoginTest`, `ProductsTest`, `CartTest` y `CheckoutTest` contienen los escenarios y las assertions, con cada prueba vinculada a su ID de caso aprobado.
+- `LoginTest`, `ProductsTest`, `CartTest`, `CheckoutTest` y `EndToEndTest` contienen los escenarios y las assertions, con cada prueba vinculada a su ID de caso aprobado.
 - `@BeforeMethod` abre un navegador Chrome nuevo y navega a SauceDemo para cada prueba. `@AfterMethod(alwaysRun = true)` llama a `quit()` cuando existe un driver, incluso después de fallos en las pruebas.
 - `ProductsTest` inicia sesión y espera a Products durante la preparación; sus tres casos se ejecutan de forma independiente, cada uno con un navegador nuevo.
 - `CartTest` prepara un carrito con un producto para cada caso independiente.
 - `DriverFactory.createChromeDriver()` centraliza la creación de Chrome y desactiva el guardado de contraseñas y los avisos de contraseñas comprometidas en cada navegador de prueba. Cada llamada crea un WebDriver nuevo; la preparación y el cierre permanecen en las clases de tests, sin una `BaseTest`.
 - `CheckoutTest` prepara la información de checkout con un producto para cada caso independiente, cubriendo checkout válido y validación de campos obligatorios. Su método privado de assertions comprueba el error específico del campo y que checkout sigue bloqueado; las assertions permanecen en la capa de tests.
-- `CheckoutInformationPage` permite ingresar campos, pulsar Continue y consultar errores, además de verificar el destino utilizado por Cart. `CheckoutOverviewPage` permite revisar el resumen y finalizar el pedido; `CheckoutCompletePage` expone el estado de confirmación. El flujo end-to-end sigue planeado.
+- `CheckoutInformationPage` permite ingresar campos, pulsar Continue y consultar errores, además de verificar el destino utilizado por Cart. `CheckoutOverviewPage` permite revisar el resumen y finalizar el pedido; `CheckoutCompletePage` expone el estado de confirmación. `CheckoutCompletePage` también abre el menú y cierra sesión; `LoginPage` espera al formulario de login después del logout.
+- `EndToEndTest` ejecuta el flujo completo de compra y logout en una sesión de navegador independiente, reutilizando los Page Objects existentes.
 - Selenium Manager resuelve ChromeDriver automáticamente.
 
 Estructura actual de automatización:
@@ -83,7 +84,8 @@ src/test/java/com/david/qa/
     ├── LoginTest.java
     ├── ProductsTest.java
     ├── CartTest.java
-    └── CheckoutTest.java
+    ├── CheckoutTest.java
+    └── EndToEndTest.java
 ```
 
 El proyecto utiliza Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0 y Maven Surefire Plugin 3.6.0.

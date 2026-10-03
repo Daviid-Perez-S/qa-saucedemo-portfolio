@@ -4,7 +4,7 @@ An early-stage QA portfolio project for planning and automating core user flows 
 
 This English `README.md` is the primary GitHub landing page. [Read the Spanish version](README-spanish.md).
 
-**Project owner:** David Pérez · **Status:** QA documentation prepared; Login, Products, Cart, and Checkout automation implemented.
+**Project owner:** David Pérez · **Status:** QA documentation prepared; all 15 initial functional test cases automated and verified.
 
 ## Project goals
 
@@ -30,7 +30,7 @@ The test environment currently documented is a personal laptop running Windows 1
 
 ## Automation Coverage
 
-**Automation progress: 14 / 15 test cases**
+**Automation progress: 15 / 15 test cases**
 
 | Test Case ID | Scenario | Status |
 |---|---|---|
@@ -48,7 +48,7 @@ The test environment currently documented is a personal laptop running Windows 1
 | TC-CHECK-002 | Validate missing first name | Automated |
 | TC-CHECK-003 | Validate missing last name | Automated |
 | TC-CHECK-004 | Validate missing postal code | Automated |
-| TC-E2E-001 | Complete a purchase and log out | Planned |
+| TC-E2E-001 | Complete a purchase and log out | Automated |
 
 Status reflects implementation in the code, not an execution result. See the [English QA workbook](docs/test-artifacts/qa-test-documentation-english.xlsx) for complete steps, test data, expected results, and execution records, and the [Test Plan](docs/test-plan/test-plan-english.md) for scope and approach.
 
@@ -57,13 +57,14 @@ Status reflects implementation in the code, not an execution result. See the [En
 The project uses Page Object Model with a small separation of responsibilities:
 
 - `LoginPage`, `ProductsPage`, `CartPage`, `CheckoutInformationPage`, `CheckoutOverviewPage`, and `CheckoutCompletePage` contain locators, interactions, explicit waits, and page state queries.
-- `LoginTest`, `ProductsTest`, `CartTest`, and `CheckoutTest` contain the test scenarios and assertions, with each test linked to its approved test case ID.
+- `LoginTest`, `ProductsTest`, `CartTest`, `CheckoutTest`, and `EndToEndTest` contain the test scenarios and assertions, with each test linked to its approved test case ID.
 - `@BeforeMethod` opens a fresh Chrome browser and navigates to SauceDemo for each test. `@AfterMethod(alwaysRun = true)` calls `quit()` when a driver exists, including after test failures.
 - `ProductsTest` logs in and waits for Products during setup; its three cases run independently, each with a fresh browser.
 - `CartTest` prepares a cart with one product for each independent case.
 - `DriverFactory.createChromeDriver()` centralizes Chrome creation and disables password saving and compromised-password prompts in every test browser. Each call creates a new WebDriver; setup and teardown stay in the test classes, without a `BaseTest`.
 - `CheckoutTest` prepares checkout information with a product for each independent case, covering valid checkout and required-field validation. Its private assertion method checks the field-specific error and that checkout remains blocked; assertions stay in the test layer.
-- `CheckoutInformationPage` supports field entry, Continue, and error queries, as well as the destination check used by Cart. `CheckoutOverviewPage` supports reviewing the summary and finishing the order; `CheckoutCompletePage` exposes the confirmation state. The end-to-end flow remains planned.
+- `CheckoutInformationPage` supports field entry, Continue, and error queries, as well as the destination check used by Cart. `CheckoutOverviewPage` supports reviewing the summary and finishing the order; `CheckoutCompletePage` exposes the confirmation state. `CheckoutCompletePage` also opens the menu and logs out; `LoginPage` waits for the login form after logout.
+- `EndToEndTest` runs the complete purchase and logout flow in one independent browser session, reusing the existing Page Objects.
 - Selenium Manager resolves ChromeDriver automatically.
 
 Current automation structure:
@@ -83,7 +84,8 @@ src/test/java/com/david/qa/
     ├── LoginTest.java
     ├── ProductsTest.java
     ├── CartTest.java
-    └── CheckoutTest.java
+    ├── CheckoutTest.java
+    └── EndToEndTest.java
 ```
 
 The project uses Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0, and Maven Surefire Plugin 3.6.0.
