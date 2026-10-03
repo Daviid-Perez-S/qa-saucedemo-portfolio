@@ -4,7 +4,7 @@ An early-stage QA portfolio project for planning and automating core user flows 
 
 This English `README.md` is the primary GitHub landing page. [Read the Spanish version](README-spanish.md).
 
-**Project owner:** David Pérez · **Status:** QA documentation prepared; Login and Products automation implemented.
+**Project owner:** David Pérez · **Status:** QA documentation prepared; Login, Products, and Cart automation implemented.
 
 ## Project goals
 
@@ -30,7 +30,7 @@ The test environment currently documented is a personal laptop running Windows 1
 
 ## Automation Coverage
 
-**Automation progress: 7 / 15 test cases**
+**Automation progress: 10 / 15 test cases**
 
 | Test Case ID | Scenario | Status |
 |---|---|---|
@@ -41,9 +41,9 @@ The test environment currently documented is a personal laptop running Windows 1
 | TC-PROD-001 | View the product catalog | Automated |
 | TC-PROD-002 | Sort products by price, low to high | Automated |
 | TC-PROD-003 | Add a product to the cart | Automated |
-| TC-CART-001 | Verify an added product in the cart | Planned |
-| TC-CART-002 | Remove a product from the cart | Planned |
-| TC-CART-003 | Continue from the cart to checkout | Planned |
+| TC-CART-001 | Verify an added product in the cart | Automated |
+| TC-CART-002 | Remove a product from the cart | Automated |
+| TC-CART-003 | Continue from the cart to checkout | Automated |
 | TC-CHECK-001 | Complete checkout with valid information | Planned |
 | TC-CHECK-002 | Validate missing first name | Planned |
 | TC-CHECK-003 | Validate missing last name | Planned |
@@ -56,10 +56,12 @@ Status reflects implementation in the code, not an execution result. See the [En
 
 The project uses Page Object Model with a small separation of responsibilities:
 
-- `LoginPage` and `ProductsPage` contain locators, interactions, explicit waits, and page state queries.
-- `LoginTest` and `ProductsTest` contain the test scenarios and assertions, with each test linked to its approved test case ID.
+- `LoginPage`, `ProductsPage`, `CartPage`, and `CheckoutInformationPage` contain locators, interactions, explicit waits, and page state queries.
+- `LoginTest`, `ProductsTest`, and `CartTest` contain the test scenarios and assertions, with each test linked to its approved test case ID.
 - `@BeforeMethod` opens a fresh Chrome browser and navigates to SauceDemo for each test. `@AfterMethod(alwaysRun = true)` calls `quit()` when a driver exists, including after test failures.
 - `ProductsTest` logs in and waits for Products during setup; its three cases run independently, each with a fresh browser.
+- `CartTest` prepares a cart with one product for each independent case and disables password manager prompts in its Chrome session.
+- `CheckoutInformationPage` only verifies the destination of the Cart checkout navigation; Checkout test cases remain planned.
 - Selenium Manager resolves ChromeDriver automatically.
 
 Current automation structure:
@@ -68,10 +70,13 @@ Current automation structure:
 src/test/java/com/david/qa/
 ├── pages/
 │   ├── LoginPage.java
-│   └── ProductsPage.java
+│   ├── ProductsPage.java
+│   ├── CartPage.java
+│   └── CheckoutInformationPage.java
 └── tests/
     ├── LoginTest.java
-    └── ProductsTest.java
+    ├── ProductsTest.java
+    └── CartTest.java
 ```
 
 The project uses Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0, and Maven Surefire Plugin 3.6.0.

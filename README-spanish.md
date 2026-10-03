@@ -4,7 +4,7 @@ Proyecto inicial de portafolio QA para planear y automatizar los flujos principa
 
 Esta versión en español es complementaria; GitHub mostrará `README.md` en inglés como portada principal. [Ver README principal](README.md).
 
-**Responsable:** David Pérez · **Estado:** documentación QA preparada; automatización de Login y Products implementada.
+**Responsable:** David Pérez · **Estado:** documentación QA preparada; automatización de Login, Products y Cart implementada.
 
 ## Objetivos del proyecto
 
@@ -30,7 +30,7 @@ El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y 
 
 ## Cobertura de Automatización
 
-**Progreso de automatización: 7 / 15 casos de prueba**
+**Progreso de automatización: 10 / 15 casos de prueba**
 
 | ID de caso de prueba | Escenario | Estado |
 |---|---|---|
@@ -41,9 +41,9 @@ El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y 
 | TC-PROD-001 | Visualizar el catálogo de productos | Automatizado |
 | TC-PROD-002 | Ordenar productos por precio de menor a mayor | Automatizado |
 | TC-PROD-003 | Agregar un producto al carrito | Automatizado |
-| TC-CART-001 | Verificar un producto agregado en el carrito | Planeado |
-| TC-CART-002 | Eliminar un producto del carrito | Planeado |
-| TC-CART-003 | Continuar del carrito al checkout | Planeado |
+| TC-CART-001 | Verificar un producto agregado en el carrito | Automatizado |
+| TC-CART-002 | Eliminar un producto del carrito | Automatizado |
+| TC-CART-003 | Continuar del carrito al checkout | Automatizado |
 | TC-CHECK-001 | Completar checkout con información válida | Planeado |
 | TC-CHECK-002 | Validar nombre vacío | Planeado |
 | TC-CHECK-003 | Validar apellido vacío | Planeado |
@@ -56,10 +56,12 @@ El estado refleja la implementación en el código, no un resultado de ejecució
 
 El proyecto utiliza Page Object Model con una separación sencilla de responsabilidades:
 
-- `LoginPage` y `ProductsPage` contienen localizadores, interacciones, esperas explícitas y consultas del estado de las páginas.
-- `LoginTest` y `ProductsTest` contienen los escenarios y las assertions, con cada prueba vinculada a su ID de caso aprobado.
+- `LoginPage`, `ProductsPage`, `CartPage` y `CheckoutInformationPage` contienen localizadores, interacciones, esperas explícitas y consultas del estado de las páginas.
+- `LoginTest`, `ProductsTest` y `CartTest` contienen los escenarios y las assertions, con cada prueba vinculada a su ID de caso aprobado.
 - `@BeforeMethod` abre un navegador Chrome nuevo y navega a SauceDemo para cada prueba. `@AfterMethod(alwaysRun = true)` llama a `quit()` cuando existe un driver, incluso después de fallos en las pruebas.
 - `ProductsTest` inicia sesión y espera a Products durante la preparación; sus tres casos se ejecutan de forma independiente, cada uno con un navegador nuevo.
+- `CartTest` prepara un carrito con un producto para cada caso independiente y desactiva los avisos del gestor de contraseñas en su sesión de Chrome.
+- `CheckoutInformationPage` solo verifica el destino de la navegación desde Cart hacia checkout; los casos de Checkout siguen planeados.
 - Selenium Manager resuelve ChromeDriver automáticamente.
 
 Estructura actual de automatización:
@@ -68,10 +70,13 @@ Estructura actual de automatización:
 src/test/java/com/david/qa/
 ├── pages/
 │   ├── LoginPage.java
-│   └── ProductsPage.java
+│   ├── ProductsPage.java
+│   ├── CartPage.java
+│   └── CheckoutInformationPage.java
 └── tests/
     ├── LoginTest.java
-    └── ProductsTest.java
+    ├── ProductsTest.java
+    └── CartTest.java
 ```
 
 El proyecto utiliza Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0 y Maven Surefire Plugin 3.6.0.

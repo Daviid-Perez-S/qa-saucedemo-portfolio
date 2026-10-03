@@ -24,6 +24,7 @@ public class ProductsPage {
     private final By addBackpackButton = By.id("add-to-cart-sauce-labs-backpack");
     private final By removeBackpackButton = By.id("remove-sauce-labs-backpack");
     private final By cartBadge = By.cssSelector("[data-test='shopping-cart-badge']");
+    private final By cartLink = By.cssSelector("[data-test='shopping-cart-link']");
 
     public ProductsPage(WebDriver driver) {
         this.driver = driver;
@@ -87,5 +88,16 @@ public class ProductsPage {
 
     public String getCartBadgeText() {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(cartBadge)).getText();
+    }
+
+    public BigDecimal getBackpackPrice() {
+        WebElement backpack = driver.findElements(productItems).stream()
+                .filter(item -> item.findElement(productName).getText().equals("Sauce Labs Backpack"))
+                .findFirst().orElseThrow(() -> new IllegalStateException("Backpack not found in the catalog."));
+        return new BigDecimal(backpack.findElement(productPrice).getText().replace("$", "").trim());
+    }
+
+    public void openCart() {
+        wait.until(ExpectedConditions.elementToBeClickable(cartLink)).click();
     }
 }
