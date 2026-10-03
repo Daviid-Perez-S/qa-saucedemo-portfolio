@@ -2,9 +2,12 @@ package com.david.qa.tests;
 
 import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.CartPage;
+import com.david.qa.pages.CheckoutCompletePage;
 import com.david.qa.pages.CheckoutInformationPage;
+import com.david.qa.pages.CheckoutOverviewPage;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
+import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -29,6 +32,30 @@ public class CheckoutTest {
         cartPage.continueToCheckout();
         checkoutPage = new CheckoutInformationPage(driver);
         checkoutPage.waitUntilLoaded();
+    }
+
+    @Test(description = "TC-CHECK-001: Complete checkout with valid information (TD-CHECK-01)")
+    public void validInformationCompletesCheckout() {
+        checkoutPage.fillInformation("David", "Pérez", "01000");
+        checkoutPage.continueToOverview();
+        CheckoutOverviewPage overviewPage = new CheckoutOverviewPage(driver);
+        overviewPage.waitUntilLoaded();
+        Assert.assertEquals(overviewPage.getTitle(), "Checkout: Overview",
+                "Valid information should navigate to the checkout overview.");
+        Assert.assertEquals(overviewPage.getItemNames(), List.of("Sauce Labs Backpack"),
+                "The overview should show the selected product.");
+        Assert.assertFalse(overviewPage.getTotalText().isBlank(),
+                "The order total should be displayed before finishing.");
+
+        overviewPage.finishOrder();
+        CheckoutCompletePage completePage = new CheckoutCompletePage(driver);
+        completePage.waitUntilLoaded();
+        Assert.assertEquals(completePage.getPath(), "/checkout-complete.html",
+                "Finishing checkout should navigate to the order confirmation.");
+        Assert.assertEquals(completePage.getTitle(), "Checkout: Complete!",
+                "The checkout completion title should be displayed.");
+        Assert.assertEquals(completePage.getConfirmationHeader(), "Thank you for your order!",
+                "The order confirmation message should be displayed.");
     }
 
     @Test(description = "TC-CHECK-002: Validate missing first name (TD-CHECK-02)")

@@ -4,7 +4,7 @@ Proyecto inicial de portafolio QA para planear y automatizar los flujos principa
 
 Esta versión en español es complementaria; GitHub mostrará `README.md` en inglés como portada principal. [Ver README principal](README.md).
 
-**Responsable:** David Pérez · **Estado:** documentación QA preparada; automatización de Login, Products, Cart y validación de campos obligatorios de Checkout implementada.
+**Responsable:** David Pérez · **Estado:** documentación QA preparada; automatización de Login, Products, Cart y Checkout implementada.
 
 ## Objetivos del proyecto
 
@@ -30,7 +30,7 @@ El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y 
 
 ## Cobertura de Automatización
 
-**Progreso de automatización: 13 / 15 casos de prueba**
+**Progreso de automatización: 14 / 15 casos de prueba**
 
 | ID de caso de prueba | Escenario | Estado |
 |---|---|---|
@@ -44,7 +44,7 @@ El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y 
 | TC-CART-001 | Verificar un producto agregado en el carrito | Automatizado |
 | TC-CART-002 | Eliminar un producto del carrito | Automatizado |
 | TC-CART-003 | Continuar del carrito al checkout | Automatizado |
-| TC-CHECK-001 | Completar checkout con información válida | Planeado |
+| TC-CHECK-001 | Completar checkout con información válida | Automatizado |
 | TC-CHECK-002 | Validar nombre vacío | Automatizado |
 | TC-CHECK-003 | Validar apellido vacío | Automatizado |
 | TC-CHECK-004 | Validar código postal vacío | Automatizado |
@@ -56,14 +56,14 @@ El estado refleja la implementación en el código, no un resultado de ejecució
 
 El proyecto utiliza Page Object Model con una separación sencilla de responsabilidades:
 
-- `LoginPage`, `ProductsPage`, `CartPage` y `CheckoutInformationPage` contienen localizadores, interacciones, esperas explícitas y consultas del estado de las páginas.
+- `LoginPage`, `ProductsPage`, `CartPage`, `CheckoutInformationPage`, `CheckoutOverviewPage` y `CheckoutCompletePage` contienen localizadores, interacciones, esperas explícitas y consultas del estado de las páginas.
 - `LoginTest`, `ProductsTest`, `CartTest` y `CheckoutTest` contienen los escenarios y las assertions, con cada prueba vinculada a su ID de caso aprobado.
 - `@BeforeMethod` abre un navegador Chrome nuevo y navega a SauceDemo para cada prueba. `@AfterMethod(alwaysRun = true)` llama a `quit()` cuando existe un driver, incluso después de fallos en las pruebas.
 - `ProductsTest` inicia sesión y espera a Products durante la preparación; sus tres casos se ejecutan de forma independiente, cada uno con un navegador nuevo.
 - `CartTest` prepara un carrito con un producto para cada caso independiente.
 - `DriverFactory.createChromeDriver()` centraliza la creación de Chrome y desactiva el guardado de contraseñas y los avisos de contraseñas comprometidas en cada navegador de prueba. Cada llamada crea un WebDriver nuevo; la preparación y el cierre permanecen en las clases de tests, sin una `BaseTest`.
-- `CheckoutTest` prepara la información de checkout con un producto para cada validación independiente de campos obligatorios. Su método privado de assertions comprueba el error específico del campo y que checkout sigue bloqueado; las assertions permanecen en la capa de tests.
-- `CheckoutInformationPage` permite ingresar campos, pulsar Continue y consultar errores, además de verificar el destino utilizado por Cart. Completar checkout y el flujo end-to-end siguen planeados.
+- `CheckoutTest` prepara la información de checkout con un producto para cada caso independiente, cubriendo checkout válido y validación de campos obligatorios. Su método privado de assertions comprueba el error específico del campo y que checkout sigue bloqueado; las assertions permanecen en la capa de tests.
+- `CheckoutInformationPage` permite ingresar campos, pulsar Continue y consultar errores, además de verificar el destino utilizado por Cart. `CheckoutOverviewPage` permite revisar el resumen y finalizar el pedido; `CheckoutCompletePage` expone el estado de confirmación. El flujo end-to-end sigue planeado.
 - Selenium Manager resuelve ChromeDriver automáticamente.
 
 Estructura actual de automatización:
@@ -76,7 +76,9 @@ src/test/java/com/david/qa/
 │   ├── LoginPage.java
 │   ├── ProductsPage.java
 │   ├── CartPage.java
-│   └── CheckoutInformationPage.java
+│   ├── CheckoutInformationPage.java
+│   ├── CheckoutOverviewPage.java
+│   └── CheckoutCompletePage.java
 └── tests/
     ├── LoginTest.java
     ├── ProductsTest.java
