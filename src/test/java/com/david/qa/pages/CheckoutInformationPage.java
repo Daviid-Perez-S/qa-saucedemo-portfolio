@@ -57,7 +57,7 @@ public class CheckoutInformationPage {
         postalCodeField.sendKeys(postalCode);
     }
 
-    public void continueToOverview() {
+    public void clickContinue() {
         wait.until(ExpectedConditions.elementToBeClickable(continueButton)).click();
     }
 

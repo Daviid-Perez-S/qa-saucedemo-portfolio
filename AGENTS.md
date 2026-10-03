@@ -17,7 +17,7 @@
 - Work incrementally; do not generate the complete framework in one step. Explain material design choices before changing architecture.
 - Do not add Cucumber, PageFactory, ThreadLocal, Selenium Grid, Docker, or Jenkins unless David explicitly changes the project scope.
 - Do not use `Thread.sleep()`; use explicit waits suited to the condition being checked.
-- Create Chrome through `DriverFactory.createChromeDriver()` so password manager settings stay consistent across tests. Keep a fresh WebDriver per test and setup/teardown in each test class; do not introduce `BaseTest` without an agreed need.
+- Create Chrome through `DriverFactory.createChromeDriver()` so password manager settings stay consistent across tests. `BaseTest` centralizes only the common WebDriver lifecycle: a fresh browser and initial navigation per test, followed by `quit()` and clearing the driver reference. Keep scenario-specific preparation, Page Objects, and assertions in the concrete test classes; do not expand `BaseTest` beyond this responsibility without an agreed need.
 - Do not invent SauceDemo behavior, requirements, or defects. Document defects only when they are observed.
 - Do not copy code from other repositories. Use external material as reference and write project-specific implementation.
 - Keep the English and Spanish project documents aligned when either version changes.

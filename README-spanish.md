@@ -58,12 +58,13 @@ El proyecto utiliza Page Object Model con una separación sencilla de responsabi
 
 - `LoginPage`, `ProductsPage`, `CartPage`, `CheckoutInformationPage`, `CheckoutOverviewPage` y `CheckoutCompletePage` contienen localizadores, interacciones, esperas explícitas y consultas del estado de las páginas.
 - `LoginTest`, `ProductsTest`, `CartTest`, `CheckoutTest` y `EndToEndTest` contienen los escenarios y las assertions, con cada prueba vinculada a su ID de caso aprobado.
-- `@BeforeMethod` abre un navegador Chrome nuevo y navega a SauceDemo para cada prueba. `@AfterMethod(alwaysRun = true)` llama a `quit()` cuando existe un driver, incluso después de fallos en las pruebas.
+- Las cinco clases de tests extienden `BaseTest`, que centraliza únicamente el lifecycle común de WebDriver. Su `@BeforeMethod` abre un navegador Chrome nuevo y navega a SauceDemo antes de la preparación específica de cada prueba. Su `@AfterMethod(alwaysRun = true)` llama a `quit()` cuando existe un driver, incluso después de fallos en las pruebas, y limpia la referencia al driver en `finally`.
 - `ProductsTest` inicia sesión y espera a Products durante la preparación; sus tres casos se ejecutan de forma independiente, cada uno con un navegador nuevo.
 - `CartTest` prepara un carrito con un producto para cada caso independiente.
-- `DriverFactory.createChromeDriver()` centraliza la creación de Chrome y desactiva el guardado de contraseñas y los avisos de contraseñas comprometidas en cada navegador de prueba. Cada llamada crea un WebDriver nuevo; la preparación y el cierre permanecen en las clases de tests, sin una `BaseTest`.
+- `DriverFactory.createChromeDriver()` centraliza la creación de Chrome y desactiva el guardado de contraseñas y los avisos de contraseñas comprometidas en cada navegador de prueba. Cada llamada crea un WebDriver nuevo; `BaseTest` administra el lifecycle común, mientras que la preparación específica y las assertions permanecen en las clases concretas de tests.
+- El test de ordenamiento espera explícitamente a que los precios mostrados alcancen el orden ascendente antes de comprobar el resultado. `CartPage.removeBackpack()` espera únicamente la eliminación de la mochila; el test de carrito espera explícitamente el estado vacío y la desaparición del badge antes de sus assertions. Estas expectativas del escenario permanecen en la capa de tests.
 - `CheckoutTest` prepara la información de checkout con un producto para cada caso independiente, cubriendo checkout válido y validación de campos obligatorios. Su método privado de assertions comprueba el error específico del campo y que checkout sigue bloqueado; las assertions permanecen en la capa de tests.
-- `CheckoutInformationPage` permite ingresar campos, pulsar Continue y consultar errores, además de verificar el destino utilizado por Cart. `CheckoutOverviewPage` permite revisar el resumen y finalizar el pedido; `CheckoutCompletePage` expone el estado de confirmación. `CheckoutCompletePage` también abre el menú y cierra sesión; `LoginPage` espera al formulario de login después del logout.
+- `CheckoutInformationPage` permite ingresar campos, ejecutar `clickContinue()` y consultar errores, además de verificar el destino utilizado por Cart. `clickContinue()` describe la acción tanto para envíos válidos como para envíos bloqueados por validación. `CheckoutOverviewPage` permite revisar el resumen y finalizar el pedido; `CheckoutCompletePage` expone el estado de confirmación. `CheckoutCompletePage` también abre el menú y cierra sesión; `LoginPage` espera al formulario de login después del logout.
 - `EndToEndTest` ejecuta el flujo completo de compra y logout en una sesión de navegador independiente, reutilizando los Page Objects existentes.
 - Selenium Manager resuelve ChromeDriver automáticamente.
 
@@ -81,6 +82,7 @@ src/test/java/com/david/qa/
 │   ├── CheckoutOverviewPage.java
 │   └── CheckoutCompletePage.java
 └── tests/
+    ├── BaseTest.java
     ├── LoginTest.java
     ├── ProductsTest.java
     ├── CartTest.java

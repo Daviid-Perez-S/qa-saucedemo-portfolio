@@ -1,26 +1,22 @@
 package com.david.qa.tests;
 
-import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class ProductsTest {
-    private WebDriver driver;
+public class ProductsTest extends BaseTest {
     private ProductsPage productsPage;
 
     @BeforeMethod
     public void setUp() {
-        driver = DriverFactory.createChromeDriver();
-        driver.get("https://www.saucedemo.com/");
         new LoginPage(driver).login("standard_user", "secret_sauce");
         productsPage = new ProductsPage(driver);
         productsPage.waitUntilLoaded();
@@ -39,7 +35,14 @@ public class ProductsTest {
     @Test(description = "TC-PROD-002: Sort products by price, low to high")
     public void productsCanBeSortedByAscendingPrice() {
         productsPage.sortByPriceLowToHigh();
-        List<BigDecimal> actualPrices = productsPage.getProductPrices();
+        List<BigDecimal> actualPrices = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .withMessage("The displayed product prices should reach ascending order after sorting.")
+                .until(driver -> {
+                    List<BigDecimal> prices = productsPage.getProductPrices();
+                    List<BigDecimal> sortedPrices = new ArrayList<>(prices);
+                    sortedPrices.sort(Comparator.naturalOrder());
+                    return prices.size() > 1 && prices.equals(sortedPrices) ? prices : null;
+                });
         Assert.assertTrue(actualPrices.size() > 1,
                 "At least two prices are needed to check ordering.");
 
@@ -56,12 +59,5 @@ public class ProductsTest {
                 "The selected backpack should offer removal after being added.");
         Assert.assertEquals(productsPage.getCartBadgeText(), "1",
                 "Adding the backpack should show one item in the cart badge.");
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }

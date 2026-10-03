@@ -48,8 +48,6 @@ public class CartPage {
     public void removeBackpack() {
         wait.until(ExpectedConditions.elementToBeClickable(removeBackpackButton)).click();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(removeBackpackButton));
-        wait.until(ExpectedConditions.numberOfElementsToBe(cartItems, 0));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(cartBadge));
     }
 
     public boolean isCartBadgeDisplayed() {

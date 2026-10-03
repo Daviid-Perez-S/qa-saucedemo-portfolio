@@ -1,23 +1,11 @@
 package com.david.qa.tests;
 
-import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
-import java.net.URI;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class LoginTest {
-    private WebDriver driver;
-
-    @BeforeMethod
-    public void setUp() {
-        driver = DriverFactory.createChromeDriver();
-        driver.get("https://www.saucedemo.com/");
-    }
+public class LoginTest extends BaseTest {
 
     @Test(description = "TC-LOGIN-001: Login with valid credentials (TD-LOGIN-01)")
     public void standardUserCanLogin() {
@@ -42,7 +30,7 @@ public class LoginTest {
         Assert.assertEquals(loginPage.getErrorMessage(),
                 "Epic sadface: Username and password do not match any user in this service",
                 "An incorrect password should produce a clear credentials error.");
-        Assert.assertEquals(URI.create(driver.getCurrentUrl()).getPath(), "/",
+        Assert.assertEquals(loginPage.getPath(), "/",
                 "Rejected login should keep the user on the login page.");
         Assert.assertTrue(loginPage.isLoginFormDisplayed(),
                 "The login form should remain visible after access is denied.");
@@ -56,7 +44,7 @@ public class LoginTest {
         Assert.assertEquals(loginPage.getErrorMessage(),
                 "Epic sadface: Username and password do not match any user in this service",
                 "An unknown user should produce a clear credentials error.");
-        Assert.assertEquals(URI.create(driver.getCurrentUrl()).getPath(), "/",
+        Assert.assertEquals(loginPage.getPath(), "/",
                 "Rejected login should keep the user on the login page.");
         Assert.assertTrue(loginPage.isLoginFormDisplayed(),
                 "The login form should remain visible after access is denied.");
@@ -70,16 +58,9 @@ public class LoginTest {
         Assert.assertEquals(loginPage.getErrorMessage(),
                 "Epic sadface: Sorry, this user has been locked out.",
                 "A locked user should receive the specific locked-user message.");
-        Assert.assertEquals(URI.create(driver.getCurrentUrl()).getPath(), "/",
+        Assert.assertEquals(loginPage.getPath(), "/",
                 "Rejected login should keep the user on the login page.");
         Assert.assertTrue(loginPage.isLoginFormDisplayed(),
                 "The login form should remain visible after access is denied.");
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }

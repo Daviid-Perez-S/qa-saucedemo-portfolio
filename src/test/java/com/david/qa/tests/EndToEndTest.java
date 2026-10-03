@@ -1,6 +1,5 @@
 package com.david.qa.tests;
 
-import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.CartPage;
 import com.david.qa.pages.CheckoutCompletePage;
 import com.david.qa.pages.CheckoutInformationPage;
@@ -8,20 +7,10 @@ import com.david.qa.pages.CheckoutOverviewPage;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
 import java.util.List;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class EndToEndTest {
-    private WebDriver driver;
-
-    @BeforeMethod
-    public void setUp() {
-        driver = DriverFactory.createChromeDriver();
-        driver.get("https://www.saucedemo.com/");
-    }
+public class EndToEndTest extends BaseTest {
 
     @Test(description = "TC-E2E-001: Complete a purchase and log out (TD-LOGIN-01, TD-PROD-01, TD-CHECK-01)")
     public void userCanCompletePurchaseAndLogout() {
@@ -42,7 +31,7 @@ public class EndToEndTest {
         CheckoutInformationPage informationPage = new CheckoutInformationPage(driver);
         informationPage.waitUntilLoaded();
         informationPage.fillInformation("David", "Pérez", "01000");
-        informationPage.continueToOverview();
+        informationPage.clickContinue();
 
         CheckoutOverviewPage overviewPage = new CheckoutOverviewPage(driver);
         overviewPage.waitUntilLoaded();
@@ -62,12 +51,5 @@ public class EndToEndTest {
                 "Logout should return the user to the login page.");
         Assert.assertTrue(loginPage.isLoginFormDisplayed(),
                 "The login form should be displayed after logout.");
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }

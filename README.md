@@ -58,12 +58,13 @@ The project uses Page Object Model with a small separation of responsibilities:
 
 - `LoginPage`, `ProductsPage`, `CartPage`, `CheckoutInformationPage`, `CheckoutOverviewPage`, and `CheckoutCompletePage` contain locators, interactions, explicit waits, and page state queries.
 - `LoginTest`, `ProductsTest`, `CartTest`, `CheckoutTest`, and `EndToEndTest` contain the test scenarios and assertions, with each test linked to its approved test case ID.
-- `@BeforeMethod` opens a fresh Chrome browser and navigates to SauceDemo for each test. `@AfterMethod(alwaysRun = true)` calls `quit()` when a driver exists, including after test failures.
+- All five test classes extend `BaseTest`, which centralizes only the common WebDriver lifecycle. Its `@BeforeMethod` opens a fresh Chrome browser and navigates to SauceDemo before each test's specific preparation. Its `@AfterMethod(alwaysRun = true)` calls `quit()` when a driver exists, including after test failures, and clears the driver reference in `finally`.
 - `ProductsTest` logs in and waits for Products during setup; its three cases run independently, each with a fresh browser.
 - `CartTest` prepares a cart with one product for each independent case.
-- `DriverFactory.createChromeDriver()` centralizes Chrome creation and disables password saving and compromised-password prompts in every test browser. Each call creates a new WebDriver; setup and teardown stay in the test classes, without a `BaseTest`.
+- `DriverFactory.createChromeDriver()` centralizes Chrome creation and disables password saving and compromised-password prompts in every test browser. Each call creates a new WebDriver; `BaseTest` owns the common lifecycle, while scenario-specific preparation and assertions stay in the concrete test classes.
+- The sorting test explicitly waits for the displayed prices to reach ascending order before asserting the result. `CartPage.removeBackpack()` waits only for the backpack removal; the cart test explicitly waits for the empty-cart state and disappearing badge before its assertions. These scenario expectations remain in the test layer.
 - `CheckoutTest` prepares checkout information with a product for each independent case, covering valid checkout and required-field validation. Its private assertion method checks the field-specific error and that checkout remains blocked; assertions stay in the test layer.
-- `CheckoutInformationPage` supports field entry, Continue, and error queries, as well as the destination check used by Cart. `CheckoutOverviewPage` supports reviewing the summary and finishing the order; `CheckoutCompletePage` exposes the confirmation state. `CheckoutCompletePage` also opens the menu and logs out; `LoginPage` waits for the login form after logout.
+- `CheckoutInformationPage` supports field entry, `clickContinue()`, and error queries, as well as the destination check used by Cart. `clickContinue()` describes the action for both valid submissions and submissions blocked by validation. `CheckoutOverviewPage` supports reviewing the summary and finishing the order; `CheckoutCompletePage` exposes the confirmation state. `CheckoutCompletePage` also opens the menu and logs out; `LoginPage` waits for the login form after logout.
 - `EndToEndTest` runs the complete purchase and logout flow in one independent browser session, reusing the existing Page Objects.
 - Selenium Manager resolves ChromeDriver automatically.
 
@@ -81,6 +82,7 @@ src/test/java/com/david/qa/
 │   ├── CheckoutOverviewPage.java
 │   └── CheckoutCompletePage.java
 └── tests/
+    ├── BaseTest.java
     ├── LoginTest.java
     ├── ProductsTest.java
     ├── CartTest.java

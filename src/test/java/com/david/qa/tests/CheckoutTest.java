@@ -1,6 +1,5 @@
 package com.david.qa.tests;
 
-import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.CartPage;
 import com.david.qa.pages.CheckoutCompletePage;
 import com.david.qa.pages.CheckoutInformationPage;
@@ -8,20 +7,15 @@ import com.david.qa.pages.CheckoutOverviewPage;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
 import java.util.List;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class CheckoutTest {
-    private WebDriver driver;
+public class CheckoutTest extends BaseTest {
     private CheckoutInformationPage checkoutPage;
 
     @BeforeMethod
     public void setUp() {
-        driver = DriverFactory.createChromeDriver();
-        driver.get("https://www.saucedemo.com/");
         new LoginPage(driver).login("standard_user", "secret_sauce");
         ProductsPage productsPage = new ProductsPage(driver);
         productsPage.waitUntilLoaded();
@@ -37,7 +31,7 @@ public class CheckoutTest {
     @Test(description = "TC-CHECK-001: Complete checkout with valid information (TD-CHECK-01)")
     public void validInformationCompletesCheckout() {
         checkoutPage.fillInformation("David", "Pérez", "01000");
-        checkoutPage.continueToOverview();
+        checkoutPage.clickContinue();
         CheckoutOverviewPage overviewPage = new CheckoutOverviewPage(driver);
         overviewPage.waitUntilLoaded();
         Assert.assertEquals(overviewPage.getTitle(), "Checkout: Overview",
@@ -61,21 +55,21 @@ public class CheckoutTest {
     @Test(description = "TC-CHECK-002: Validate missing first name (TD-CHECK-02)")
     public void missingFirstNameBlocksCheckout() {
         checkoutPage.fillInformation("", "Pérez", "01000");
-        checkoutPage.continueToOverview();
+        checkoutPage.clickContinue();
         assertCheckoutBlocked("Error: First Name is required");
     }
 
     @Test(description = "TC-CHECK-003: Validate missing last name (TD-CHECK-02)")
     public void missingLastNameBlocksCheckout() {
         checkoutPage.fillInformation("David", "", "01000");
-        checkoutPage.continueToOverview();
+        checkoutPage.clickContinue();
         assertCheckoutBlocked("Error: Last Name is required");
     }
 
     @Test(description = "TC-CHECK-004: Validate missing postal code (TD-CHECK-02)")
     public void missingPostalCodeBlocksCheckout() {
         checkoutPage.fillInformation("David", "Pérez", "");
-        checkoutPage.continueToOverview();
+        checkoutPage.clickContinue();
         assertCheckoutBlocked("Error: Postal Code is required");
     }
 
@@ -86,12 +80,5 @@ public class CheckoutTest {
                 "Invalid information should keep the user on checkout information.");
         Assert.assertTrue(checkoutPage.isInformationFormDisplayed(),
                 "The information form should remain visible after validation fails.");
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }

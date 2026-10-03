@@ -1,27 +1,23 @@
 package com.david.qa.tests;
 
-import com.david.qa.driver.DriverFactory;
 import com.david.qa.pages.CartPage;
 import com.david.qa.pages.CheckoutInformationPage;
 import com.david.qa.pages.LoginPage;
 import com.david.qa.pages.ProductsPage;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class CartTest {
-    private WebDriver driver;
+public class CartTest extends BaseTest {
     private CartPage cartPage;
     private BigDecimal backpackCatalogPrice;
 
     @BeforeMethod
     public void setUp() {
-        driver = DriverFactory.createChromeDriver();
-        driver.get("https://www.saucedemo.com/");
         new LoginPage(driver).login("standard_user", "secret_sauce");
         ProductsPage productsPage = new ProductsPage(driver);
         productsPage.waitUntilLoaded();
@@ -45,6 +41,9 @@ public class CartTest {
     @Test(description = "TC-CART-002: Remove a product from the cart (TD-PROD-01)")
     public void backpackCanBeRemovedFromCart() {
         cartPage.removeBackpack();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .withMessage("Removing the only product should leave an empty cart without a badge.")
+                .until(driver -> cartPage.getItemCount() == 0 && !cartPage.isCartBadgeDisplayed());
         Assert.assertEquals(cartPage.getItemCount(), 0,
                 "Removing the only product should leave the cart empty.");
         Assert.assertTrue(cartPage.getItemNames().isEmpty(),
@@ -64,12 +63,5 @@ public class CartTest {
                 "The checkout information title should be displayed.");
         Assert.assertTrue(checkoutPage.isInformationFormDisplayed(),
                 "The checkout information fields should be visible.");
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }
