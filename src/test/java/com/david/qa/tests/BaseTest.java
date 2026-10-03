@@ -8,6 +8,10 @@ import org.testng.annotations.BeforeMethod;
 public abstract class BaseTest {
     protected WebDriver driver;
 
+    public final WebDriver getDriver() {
+        return driver;
+    }
+
     @BeforeMethod
     public void openBrowser() {
         driver = DriverFactory.createChromeDriver();

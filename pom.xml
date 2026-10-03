@@ -15,6 +15,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>4.49.0</version>
@@ -31,6 +37,16 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <reportVersion>3.20.0</reportVersion>
+                    <reportDirectory>${project.build.directory}/allure-report</reportDirectory>
+                    <historyEnabled>false</historyEnabled>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.16.0</version>
@@ -38,7 +54,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.6.0</version>
+                <!-- Use the native TestNG provider to avoid Allure results from discovery dry runs. -->
+                <version>3.5.6</version>
             </plugin>
         </plugins>
     </build>

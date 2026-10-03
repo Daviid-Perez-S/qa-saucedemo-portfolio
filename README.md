@@ -4,14 +4,15 @@ An early-stage QA portfolio project for planning and automating core user flows 
 
 This English `README.md` is the primary GitHub landing page. [Read the Spanish version](README-spanish.md).
 
-**Project owner:** David Pérez · **Status:** QA documentation prepared; all 15 initial functional test cases automated and verified.
+**Project owner:** David Pérez · **Status:** QA documentation prepared; all 15 initial functional test cases automated and verified; Allure reporting and automatic failure evidence verified.
 
 ## Project goals
 
 - Document a focused set of 15 functional test cases with clear scenarios, steps, expected results, and test data.
 - Build a maintainable Java UI automation project using Maven, Selenium WebDriver, TestNG, and Page Object Model.
 - Automate the 15 agreed cases and record results and defects when found.
-- Add accessibility testing, test reporting, and GitHub Actions CI/CD in later phases.
+- Generate Allure reports with automatic browser evidence for failed tests.
+- Add accessibility testing and GitHub Actions CI/CD in later phases.
 
 API testing is planned as a separate portfolio project. The initial scope excludes performance, security, mobile, exhaustive cross-browser, backend, and real payment testing.
 
@@ -22,11 +23,11 @@ API testing is planned as a separate portfolio project. The initial scope exclud
 - [Project instructions for coding agents](AGENTS.md)
 - [README en español](README-spanish.md)
 
-## Planned technology
+## Current technology
 
-Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chrome
+Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chrome · Allure Report
 
-The test environment currently documented is a personal laptop running Windows 11 25H2 and Google Chrome 154. The Chrome version is a snapshot and may change.
+The test environment currently documented is a personal laptop running Windows 11 25H2 and Google Chrome 154.0.8037.93. The Chrome version is a snapshot and may change.
 
 ## Automation Coverage
 
@@ -67,6 +68,7 @@ The project uses Page Object Model with a small separation of responsibilities:
 - `CheckoutInformationPage` supports field entry, `clickContinue()`, and error queries, as well as the destination check used by Cart. `clickContinue()` describes the action for both valid submissions and submissions blocked by validation. `CheckoutOverviewPage` supports reviewing the summary and finishing the order; `CheckoutCompletePage` exposes the confirmation state. `CheckoutCompletePage` also opens the menu and logs out; `LoginPage` waits for the login form after logout.
 - `EndToEndTest` runs the complete purchase and logout flow in one independent browser session, reusing the existing Page Objects.
 - Selenium Manager resolves ChromeDriver automatically.
+- `FailureEvidenceListener` uses `IInvokedMethodListener.afterInvocation()` and is registered centrally through ServiceLoader. For failed `@Test` methods, it obtains the current instance's browser through `BaseTest.getDriver()` and independently attempts a PNG screenshot and current URL before cleanup. Evidence errors preserve the original failure. Execution remains sequential, with a fresh browser per test.
 
 Current automation structure:
 
@@ -74,6 +76,8 @@ Current automation structure:
 src/test/java/com/david/qa/
 ├── driver/
 │   └── DriverFactory.java
+├── listeners/
+│   └── FailureEvidenceListener.java
 ├── pages/
 │   ├── LoginPage.java
 │   ├── ProductsPage.java
@@ -90,7 +94,11 @@ src/test/java/com/david/qa/
     └── EndToEndTest.java
 ```
 
-The project uses Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0, and Maven Surefire Plugin 3.6.0.
+Test resources contain `allure.properties` and `META-INF/services/org.testng.ITestNGListener`.
+
+The project uses Java 25, Selenium 4.49.0, TestNG 7.12.0, Maven Compiler Plugin 3.16.0, Maven Surefire Plugin 3.5.6, Allure TestNG 3.0.0, Allure Maven Plugin 3.1.0, and Allure Report 3.20.0.
+
+Surefire 3.5.6 is a compatibility decision for the current TestNG + Allure integration. Surefire 3.6.0 uses the JUnit Platform TestNG engine, whose discovery dry runs generated 45 Allure results for 15 actual tests. The native TestNG provider in 3.5.6 was verified to produce exactly 15 unique results without adapters or result filters.
 
 ## Run the automated tests
 
@@ -99,10 +107,32 @@ Requirements: JDK 25, Maven, Google Chrome, and internet access to SauceDemo. Ma
 From the project root, run:
 
 ```shell
-mvn test
+mvn clean test
 ```
 
 Standard execution results are available in `target/surefire-reports/`.
+
+## Allure reporting and failure evidence
+
+Raw Allure results are written to `target/allure-results/`. Generate the HTML report after running the tests:
+
+```shell
+mvn allure:report
+```
+
+The report is generated in `target/allure-report/`. To generate and view it on a local server:
+
+```shell
+mvn allure:serve
+```
+
+Stop the server with `Ctrl+C`. The plugin downloads its private Node.js runtime and Allure Report package into `.allure/` on first use; internet access is required for that download, but a global Node.js installation is not required. The runtime cache and generated results/reports are ignored by Git. Report history is initially disabled with `historyEnabled=false`.
+
+If a test run fails, run the report command separately without running `clean` in between, so its results and evidence remain available. Use `mvn clean test` for a fresh execution to avoid mixing results from different runs.
+
+Failed `@Test` methods receive only a browser PNG screenshot and current URL as a text attachment, when the browser is available. TestNG/Allure supplies the original exception, message, and stack trace. Successful tests receive no browser evidence; configuration failures are reported without browser evidence. Tests and Page Objects contain no reporting logic. No retries, additional logging, page source, console/network logs, or video are collected.
+
+Validation on October 2, 2026 confirmed 15 tests, 0 failures, 0 errors, and 0 skipped, with exactly 15 unique Allure results and no successful-test attachments. A temporary controlled failure in TC-LOGIN-001 produced one failed result with exactly two attachments (PNG and inventory URL) and the original `AssertionError` details. The temporary assertion was removed; the full suite passed again and the final report contains exactly 15 passed tests.
 
 ## Application under test
 
