@@ -15,6 +15,9 @@ public final class DriverFactory {
                 "credentials_enable_service", false,
                 "profile.password_manager_enabled", false,
                 "profile.password_manager_leak_detection", false));
+        if (Boolean.getBoolean("headless")) {
+            options.addArguments("--headless", "--window-size=1280,900");
+        }
         return new ChromeDriver(options);
     }
 }
