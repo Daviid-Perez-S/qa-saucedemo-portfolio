@@ -38,3 +38,6 @@ jobs:
           javac --version | grep -E '^javac 25([.]|$)'
           mvn --version
           google-chrome --version
+
+      - name: Run functional tests (headless)
+        run: mvn --batch-mode --no-transfer-progress clean test -Dheadless=true
