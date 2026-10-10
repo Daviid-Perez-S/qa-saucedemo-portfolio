@@ -2,17 +2,17 @@
 
 Project: `qa-saucedemo-portfolio`  
 Application: https://www.saucedemo.com/  
-Document version: 1.0  
-Documentation date: 2026-10-08  
+Document version: 1.1
+Updated: 2026-10-09
 Baseline: WCAG 2.2 A / AA
 
 ## Purpose and current state
 
-Define a future accessibility evaluation of the main purchase process. This delivery creates documentation only. Axe integration, accessibility test execution and manual evaluation have not been performed. SauceDemo WCAG 2.2 AA conformance is not established.
+Define accessibility evaluation of the main purchase process. Axe integration and six automated cases with thirteen scans were implemented and verified on 2026-10-09. See Test Results for actual outcomes. Manual evaluation remains pending and WCAG 2.2 AA conformance is not established.
 
-Status values are identical in both editions: Implementation Status = Planned / Not Implemented (automated) or Planned (manual); Execution Status = Not Executed; Compliance Result = Not Evaluated. Manual lifecycle is Planned / Not Executed. Applicable and To Be Confirmed describe preliminary applicability, not compliance.
+Automated statuses: Implementation Status = Implemented / Verified; Execution Status = Executed. Automated outcome is separate from Compliance Result = Not Evaluated. Manual lifecycle remains Planned / Not Executed. Applicable and To Be Confirmed remain preliminary applicability.
 
-The approved project baseline reports 15 functional tests using Java 25, Selenium, TestNG, Maven, Page Object Model and Allure. REF-02 reports Selenium 4.49.0, TestNG 7.12.0, Allure TestNG 3.0.0 and Surefire 3.5.6 from a previous configuration inspection. These are source observations, not versions verified during this documentation task or accessibility execution evidence.
+Maven verification used Java 25.0.4.1, Selenium 4.49.0, TestNG 7.12.0, Allure TestNG 3.0.0 and Surefire 3.5.6. Integration is com.deque.html.axe-core:selenium:4.13.0 with axe-core 4.13.0. Only WebDriverManager is excluded. Maven mediation selects direct Selenium 4.49.0 over transitive 4.13.0; DriverFactory/Selenium Manager are retained.
 
 ## Scope
 
@@ -24,7 +24,7 @@ Excluded initially: additional dynamic catalogs, long catalog, individual produc
 
 ## Source review and coverage matrix
 
-The workbook reuses REF-02’s detailed matrix: 55 current A/AA criteria, 37 Applicable and 18 To Be Confirmed, with no closed Not Applicable decisions. It retains official English criterion names in both editions, levels, evaluation methods and test relationships. Both means partial automation plus planned human evaluation. Automated links are provisional until the selected axe release and rule tags are verified.
+The workbook reuses REF-02’s detailed matrix: 55 current A/AA criteria, 37 Applicable and 18 To Be Confirmed, with no closed Not Applicable decisions. It retains official English criterion names in both editions, levels, evaluation methods and test relationships. Both means partial automation plus planned human evaluation. The selected release and rule tags were verified. The matrix records partial automated rule execution for 22 criteria; all 55 criteria remain Not Evaluated and manual evaluation remains pending.
 
 Scope reconciliation: 2.2.2 retains source applicability for the broader application because its evidence concerns the excluded Slider. Triggering content in the approved flow remains To Be Confirmed, and the excluded route is deferred. For 2.4.5, inspect approved navigation and process exceptions while deferring detail/catalog extensions. For 4.1.3, planned review covers in-scope errors/cart changes, not excluded dynamic loading. These distinctions are explicit in the matrix.
 
@@ -45,11 +45,11 @@ To close Not Applicable, record the inspected scope and states, observation date
 
 Total: 13 required axe scans inside exactly six TestNG tests. State keys are evidence identifiers, not new test-case IDs. No additional locked-user, sorting, submenu or filled-form scan is required initially.
 
-Application available. Fresh Chrome browser, known session/cart state. Future axe version and rule configuration pinned. Wait explicitly for the expected state, images and fonts before scanning the full rendered page.
+Application available. Fresh Chrome browser, known session/cart state. Axe version and rule configuration are pinned in AccessibilityAudit. Wait explicitly for the expected state, images and fonts before scanning the full rendered page.
 
 Prepare every case independently using public demo credentials and synthetic checkout data from Test Data. Reach Overview and Complete through the actual process. Reset form values before each missing-field variant so that only one required field is absent. Confirm the expected page/state before each scan. Collect all reachable required-state results before the final assertion where feasible; a first violation should not conceal later evidence.
 
-Select and pin axe-core and its Java integration later. Verify WCAG 2.0/2.1/2.2 A/AA rules supported by that release, including explicit target-size inclusion. Do not assume WCAG 2.2 rules are enabled by default. Record enabled tags/rules, disabled rules and reasons; do not suppress failures through severity filters or unsubstantiated exclusions. No version, dependency or definitive execution command is invented here.
+Configuration pinned in AccessibilityAudit: `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`. Explicitly enabled target-size and experimental rules `css-orientation-lock`, `label-content-name-mismatch`, `p-as-heading`, `table-fake-caption`, `td-has-header`. target-size is disabled by default and is not experimental. Deprecated, AAA, best-practice and obsolete rules are outside the baseline. No impact/node filtering is applied. Engine, inventory and results for all selected rules are checked. violations, passes, incomplete and inapplicable are retained.
 
 ### Automated result rule
 
@@ -82,23 +82,23 @@ Manual measurable conditions: text enlargement to 200%; vertical-flow reflow at 
 
 For each case and scan preserve: run ID, timestamp, case ID, state key, URL, environment, axe version/configuration, preparation completion and scan execution status. Attach structured axe output including violations, passes, incomplete and inapplicable. Violation records include rule ID, WCAG tags, impact, description/help URL, affected nodes/selectors/HTML and failure summaries. Identify screenshot/URL by the state where evidence was captured. Preserve technical errors with stage, exception, message and stack trace. Screenshots support evidence but do not substitute for the structured scan.
 
-The existing listener is reported to capture screenshots and URLs for functional failures; no axe evidence integration exists yet. Keep reporting responsibilities outside Page Objects and scenario logic during future implementation. Publish only genuine run/Allure references and redact accidental personal data.
+AccessibilityEvidenceListener attaches scan JSONs and case manifests before Allure closes the result, including unexpected method termination. FailureEvidenceListener retains its screenshot/URL behavior unchanged. Original errors are preserved. Reporting stays outside Page Objects and tests; tests prepare states and request audits.
 
-## Future execution modes and completion
+## Verified execution modes and completion
 
 | Mode | Expected tests | Implementation |
 | --- | --- | --- |
-| Functional | 15 | Planned |
-| Accessibility | 6 | Planned |
-| All | 21 | Planned |
+| Functional | 15 | Verified |
+| Accessibility | 6 | Verified |
+| All | 21 | Verified |
 
-The three Maven modes are independent planned selections. TestNG groups or suite/profile selection may be considered later; configuration and commands must be implemented and verified before documentation treats them as executable. Entry requires the selected versions/rules and reproducible environment plus stable preparation. Automated execution completes only when all thirteen required scans have recorded outcomes and retained evidence. Completion of automation does not complete human evaluation. Update results and real defects after execution, leaving manual categories pending until actually performed.
+Verified modes without profiles or suite XML: Functional `mvn clean test` (15); Accessibility `mvn clean test "-Dtest=AccessibilityTest"` (6); All `mvn clean test "-Dtest=*Test"` (21). Surefire 3.5.6 defaults to com/david/qa/tests/*Test.java; -Dtest overrides this inclusion. Run mvn allure:report or mvn allure:serve after testing without an intermediate clean. Each fresh mode starts with clean test; preserve evidence before cleaning. Manual execution remains pending.
 
 ## Deliverables and references
 
 English is primary repository documentation; Spanish is the equivalent translation. Each workbook has exactly four sheets: Automated Accessibility, Manual Accessibility, Test Data and WCAG Coverage Matrix. Read the matching Test Results document for the initial execution baseline. All six files remain editable.
 
-- REF-01: Embedded approved project contract. Documentation only for qa-saucedemo-portfolio: 15 existing functional tests using Java 25, Selenium, TestNG, Maven, Page Object Model and Allure. Initial scope: Login → Products → Cart → Checkout Information → Checkout Overview → Checkout Complete, including the defined errors, cart changes and open side menu. Exactly six automated cases with thirteen required scans, ten manual categories, four sheets per workbook and fifty-five WCAG 2.2 A/AA criteria; planned future Maven selections: Functional=15, Accessibility=6, All=21. Additional dynamic/long catalogs, product detail, Slider/Spinner, PDF generation and generated-PDF accessibility are excluded; a rendered PDF control is included. Preserve the provisional 37 Applicable / 18 To Be Confirmed classification, Not Executed / Not Evaluated baseline, separate status dimensions and bilingual equivalence. No implementation, execution evidence or conformance claim is implied.
+- REF-01 (historical 2026-10-08 baseline): Embedded approved project contract. Documentation only for qa-saucedemo-portfolio: 15 existing functional tests using Java 25, Selenium, TestNG, Maven, Page Object Model and Allure. Initial scope: Login → Products → Cart → Checkout Information → Checkout Overview → Checkout Complete, including the defined errors, cart changes and open side menu. Exactly six automated cases with thirteen required scans, ten manual categories, four sheets per workbook and fifty-five WCAG 2.2 A/AA criteria; planned future Maven selections: Functional=15, Accessibility=6, All=21. Additional dynamic/long catalogs, product detail, Slider/Spinner, PDF generation and generated-PDF accessibility are excluded; a rendered PDF control is included. Preserve the provisional 37 Applicable / 18 To Be Confirmed classification, Not Executed / Not Evaluated baseline, separate status dimensions and bilingual equivalence. No implementation, execution evidence or conformance claim is implied.
 - REF-02: Embedded historical technical baseline, not current verification. §1 Project observations: 15 functional tests; Selenium 4.49.0, TestNG 7.12.0, Allure TestNG 3.0.0 and Surefire 3.5.6; no axe integration or independent suite selections. The functional listener records failure screenshot/URL, not axe data; DriverFactory restricts password-manager assistance. §2 Static application observations: lang=en, title Swag Labs, product/confirmation images and graphical controls, cart badge/name changes, side menu/submenu, required-field validation and role=alert errors with a dismissal control. A 600-second session cookie and guarded routes were reported; the excluded Slider updates every two seconds and Spinner uses role=status. Completion conditionally renders a PDF control. Criterion-specific observations and scope limits are reproduced in the WCAG Coverage Matrix; they are not rendered-state test results. Browser interaction was unavailable, and inspection date/build reference were not recorded. §3 Public demo credentials and synthetic checkout data are reproduced in Test Data. These historical observations are not independently reverified in this revision; REF-03 provides the public normative requirements.
 - REF-03: [W3C WCAG 2.2 specification](https://www.w3.org/TR/WCAG22/), consulted 2026-10-08 for criterion names, levels and normative requirements.
-- REF-04: [axe-core rule descriptions](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md) and [axe-core API](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md). Future mapping must use the selected release, not an unpinned development branch.
+- REF-04: [axe-core rule descriptions](https://github.com/dequelabs/axe-core/blob/v4.13.0/doc/rule-descriptions.md) and [axe-core API](https://github.com/dequelabs/axe-core/blob/v4.13.0/doc/API.md). Rule inventory verified against pinned release 4.13.0; criterion mappings remain partial coverage.

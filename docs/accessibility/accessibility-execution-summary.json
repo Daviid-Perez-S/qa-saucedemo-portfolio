@@ -1,0 +1,745 @@
+{
+  "date": "2026-10-09",
+  "timezone": "America/Mexico_City",
+  "baselineCommit": "332af2851839bd4f906998b7ae5a362176a3b6fd",
+  "workingTree": "Uncommitted accessibility implementation",
+  "sourceStateAtExecution": "uncommitted",
+  "complianceResult": "Not Evaluated",
+  "complianceNote": "Passing automated tests does not establish WCAG 2.2 AA conformance. Incomplete findings require human review, and manual accessibility evaluation remains not executed.",
+  "environment": {
+    "appliesToModes": [
+      "final-accessibility",
+      "all"
+    ],
+    "java": "25.0.4.1",
+    "os": "Windows 11 10.0",
+    "browser": {
+      "name": "chrome",
+      "version": "154.0.8037.99"
+    },
+    "viewport": {
+      "devicePixelRatio": 1.25,
+      "height": 647,
+      "visualViewportScale": 1,
+      "width": 1036
+    }
+  },
+  "auditConfiguration": {
+    "testEngine": {
+      "name": "axe-core",
+      "version": "4.13.0"
+    },
+    "integrationVersion": "4.13.0",
+    "runOnly": {
+      "type": "tag",
+      "values": [
+        "wcag2a",
+        "wcag2aa",
+        "wcag21a",
+        "wcag21aa",
+        "wcag22aa"
+      ]
+    },
+    "resultTypes": [
+      "violations",
+      "passes",
+      "incomplete",
+      "inapplicable"
+    ],
+    "rules": {
+      "css-orientation-lock": {
+        "enabled": true
+      },
+      "label-content-name-mismatch": {
+        "enabled": true
+      },
+      "p-as-heading": {
+        "enabled": true
+      },
+      "table-fake-caption": {
+        "enabled": true
+      },
+      "td-has-header": {
+        "enabled": true
+      },
+      "target-size": {
+        "enabled": true
+      }
+    },
+    "experimentalEnabledRules": [
+      "css-orientation-lock",
+      "label-content-name-mismatch",
+      "p-as-heading",
+      "table-fake-caption",
+      "td-has-header"
+    ],
+    "targetSizePolicy": "Enabled explicitly; stable rule disabled by default, not tagged experimental",
+    "excludedRulePolicy": "AAA, best-practice, obsolete and deprecated outside selected baseline; no impact/node suppression"
+  },
+  "modes": {
+    "functional": {
+      "command": "mvn clean test",
+      "buildStatus": "SUCCESS",
+      "tests": 15,
+      "statuses": {
+        "passed": 15,
+        "failed": 0,
+        "broken": 0,
+        "skipped": 0
+      },
+      "scans": 0,
+      "scanResults": [],
+      "manifests": [],
+      "attachments": 0
+    },
+    "final-accessibility": {
+      "command": "mvn clean test \"-Dtest=AccessibilityTest\"",
+      "buildStatus": "SUCCESS",
+      "tests": 6,
+      "statuses": {
+        "passed": 6,
+        "failed": 0,
+        "broken": 0,
+        "skipped": 0
+      },
+      "technicalErrors": 0,
+      "complianceResult": "Not Evaluated",
+      "scans": 13,
+      "scanResults": [
+        {
+          "caseId": "A11Y-AUTO-001",
+          "state": "login-initial",
+          "url": "https://www.saucedemo.com/",
+          "timestamp": "2026-10-10T01:34:30.454Z",
+          "counts": {
+            "violations": 0,
+            "passes": 20,
+            "incomplete": 0,
+            "inapplicable": 48
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-001",
+          "state": "login-invalid-credentials",
+          "url": "https://www.saucedemo.com/",
+          "timestamp": "2026-10-10T01:34:31.194Z",
+          "counts": {
+            "violations": 0,
+            "passes": 22,
+            "incomplete": 1,
+            "inapplicable": 46
+          },
+          "violations": [],
+          "incomplete": [
+            {
+              "rule": "color-contrast",
+              "nodes": 1,
+              "targets": [
+                [
+                  "h3"
+                ]
+              ]
+            }
+          ],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-002",
+          "state": "products-initial",
+          "url": "https://www.saucedemo.com/inventory.html",
+          "timestamp": "2026-10-10T01:34:34.450Z",
+          "counts": {
+            "violations": 0,
+            "passes": 29,
+            "incomplete": 1,
+            "inapplicable": 39
+          },
+          "violations": [],
+          "incomplete": [
+            {
+              "rule": "color-contrast",
+              "nodes": 2,
+              "targets": [
+                [
+                  ".active_option"
+                ],
+                [
+                  "select"
+                ]
+              ]
+            }
+          ],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-002",
+          "state": "products-product-added",
+          "url": "https://www.saucedemo.com/inventory.html",
+          "timestamp": "2026-10-10T01:34:35.084Z",
+          "counts": {
+            "violations": 0,
+            "passes": 29,
+            "incomplete": 1,
+            "inapplicable": 39
+          },
+          "violations": [],
+          "incomplete": [
+            {
+              "rule": "color-contrast",
+              "nodes": 2,
+              "targets": [
+                [
+                  ".active_option"
+                ],
+                [
+                  "select"
+                ]
+              ]
+            }
+          ],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-002",
+          "state": "products-menu-open",
+          "url": "https://www.saucedemo.com/inventory.html",
+          "timestamp": "2026-10-10T01:34:36.194Z",
+          "counts": {
+            "violations": 0,
+            "passes": 29,
+            "incomplete": 1,
+            "inapplicable": 39
+          },
+          "violations": [],
+          "incomplete": [
+            {
+              "rule": "color-contrast",
+              "nodes": 2,
+              "targets": [
+                [
+                  ".active_option"
+                ],
+                [
+                  "select"
+                ]
+              ]
+            }
+          ],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-003",
+          "state": "cart-with-product",
+          "url": "https://www.saucedemo.com/cart.html",
+          "timestamp": "2026-10-10T01:34:15.317Z",
+          "counts": {
+            "violations": 0,
+            "passes": 27,
+            "incomplete": 0,
+            "inapplicable": 41
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-003",
+          "state": "cart-empty",
+          "url": "https://www.saucedemo.com/cart.html",
+          "timestamp": "2026-10-10T01:34:15.937Z",
+          "counts": {
+            "violations": 0,
+            "passes": 26,
+            "incomplete": 0,
+            "inapplicable": 42
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "state": "checkout-information-initial",
+          "url": "https://www.saucedemo.com/checkout-step-one.html",
+          "timestamp": "2026-10-10T01:34:22.345Z",
+          "counts": {
+            "violations": 0,
+            "passes": 30,
+            "incomplete": 0,
+            "inapplicable": 38
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "state": "checkout-error-first-name",
+          "url": "https://www.saucedemo.com/checkout-step-one.html",
+          "timestamp": "2026-10-10T01:34:23.060Z",
+          "counts": {
+            "violations": 0,
+            "passes": 30,
+            "incomplete": 0,
+            "inapplicable": 38
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "state": "checkout-error-last-name",
+          "url": "https://www.saucedemo.com/checkout-step-one.html",
+          "timestamp": "2026-10-10T01:34:23.752Z",
+          "counts": {
+            "violations": 0,
+            "passes": 30,
+            "incomplete": 0,
+            "inapplicable": 38
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "state": "checkout-error-postal-code",
+          "url": "https://www.saucedemo.com/checkout-step-one.html",
+          "timestamp": "2026-10-10T01:34:24.565Z",
+          "counts": {
+            "violations": 0,
+            "passes": 30,
+            "incomplete": 0,
+            "inapplicable": 38
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-005",
+          "state": "checkout-overview",
+          "url": "https://www.saucedemo.com/checkout-step-two.html",
+          "timestamp": "2026-10-10T01:34:27.819Z",
+          "counts": {
+            "violations": 0,
+            "passes": 27,
+            "incomplete": 0,
+            "inapplicable": 41
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-006",
+          "state": "checkout-complete",
+          "url": "https://www.saucedemo.com/checkout-complete.html",
+          "timestamp": "2026-10-10T01:34:19.409Z",
+          "counts": {
+            "violations": 0,
+            "passes": 26,
+            "incomplete": 0,
+            "inapplicable": 42
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        }
+      ],
+      "manifests": [
+        {
+          "caseId": "A11Y-AUTO-001",
+          "completedScans": 2,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-002",
+          "completedScans": 3,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-003",
+          "completedScans": 2,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "completedScans": 4,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-005",
+          "completedScans": 1,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-006",
+          "completedScans": 1,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Not Required"
+        }
+      ],
+      "attachments": 19
+    },
+    "all": {
+      "command": "mvn clean test \"-Dtest=*Test\"",
+      "buildStatus": "SUCCESS",
+      "tests": 21,
+      "statuses": {
+        "passed": 21,
+        "failed": 0,
+        "broken": 0,
+        "skipped": 0
+      },
+      "technicalErrors": 0,
+      "complianceResult": "Not Evaluated",
+      "scans": 13,
+      "scanResults": [
+        {
+          "caseId": "A11Y-AUTO-001",
+          "state": "login-initial",
+          "url": "https://www.saucedemo.com/",
+          "timestamp": "2026-10-10T01:36:05.725Z",
+          "counts": {
+            "violations": 0,
+            "passes": 20,
+            "incomplete": 0,
+            "inapplicable": 48
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-001",
+          "state": "login-invalid-credentials",
+          "url": "https://www.saucedemo.com/",
+          "timestamp": "2026-10-10T01:36:06.329Z",
+          "counts": {
+            "violations": 0,
+            "passes": 22,
+            "incomplete": 1,
+            "inapplicable": 46
+          },
+          "violations": [],
+          "incomplete": [
+            {
+              "rule": "color-contrast",
+              "nodes": 1,
+              "targets": [
+                [
+                  "h3"
+                ]
+              ]
+            }
+          ],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-002",
+          "state": "products-initial",
+          "url": "https://www.saucedemo.com/inventory.html",
+          "timestamp": "2026-10-10T01:36:09.298Z",
+          "counts": {
+            "violations": 0,
+            "passes": 29,
+            "incomplete": 1,
+            "inapplicable": 39
+          },
+          "violations": [],
+          "incomplete": [
+            {
+              "rule": "color-contrast",
+              "nodes": 2,
+              "targets": [
+                [
+                  ".active_option"
+                ],
+                [
+                  "select"
+                ]
+              ]
+            }
+          ],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-002",
+          "state": "products-product-added",
+          "url": "https://www.saucedemo.com/inventory.html",
+          "timestamp": "2026-10-10T01:36:10.034Z",
+          "counts": {
+            "violations": 0,
+            "passes": 29,
+            "incomplete": 1,
+            "inapplicable": 39
+          },
+          "violations": [],
+          "incomplete": [
+            {
+              "rule": "color-contrast",
+              "nodes": 2,
+              "targets": [
+                [
+                  ".active_option"
+                ],
+                [
+                  "select"
+                ]
+              ]
+            }
+          ],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-002",
+          "state": "products-menu-open",
+          "url": "https://www.saucedemo.com/inventory.html",
+          "timestamp": "2026-10-10T01:36:11.155Z",
+          "counts": {
+            "violations": 0,
+            "passes": 29,
+            "incomplete": 1,
+            "inapplicable": 39
+          },
+          "violations": [],
+          "incomplete": [
+            {
+              "rule": "color-contrast",
+              "nodes": 2,
+              "targets": [
+                [
+                  ".active_option"
+                ],
+                [
+                  "select"
+                ]
+              ]
+            }
+          ],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-003",
+          "state": "cart-with-product",
+          "url": "https://www.saucedemo.com/cart.html",
+          "timestamp": "2026-10-10T01:35:49.403Z",
+          "counts": {
+            "violations": 0,
+            "passes": 27,
+            "incomplete": 0,
+            "inapplicable": 41
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-003",
+          "state": "cart-empty",
+          "url": "https://www.saucedemo.com/cart.html",
+          "timestamp": "2026-10-10T01:35:50.022Z",
+          "counts": {
+            "violations": 0,
+            "passes": 26,
+            "incomplete": 0,
+            "inapplicable": 42
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "state": "checkout-information-initial",
+          "url": "https://www.saucedemo.com/checkout-step-one.html",
+          "timestamp": "2026-10-10T01:35:57.535Z",
+          "counts": {
+            "violations": 0,
+            "passes": 30,
+            "incomplete": 0,
+            "inapplicable": 38
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "state": "checkout-error-first-name",
+          "url": "https://www.saucedemo.com/checkout-step-one.html",
+          "timestamp": "2026-10-10T01:35:58.501Z",
+          "counts": {
+            "violations": 0,
+            "passes": 30,
+            "incomplete": 0,
+            "inapplicable": 38
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "state": "checkout-error-last-name",
+          "url": "https://www.saucedemo.com/checkout-step-one.html",
+          "timestamp": "2026-10-10T01:35:59.253Z",
+          "counts": {
+            "violations": 0,
+            "passes": 30,
+            "incomplete": 0,
+            "inapplicable": 38
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "state": "checkout-error-postal-code",
+          "url": "https://www.saucedemo.com/checkout-step-one.html",
+          "timestamp": "2026-10-10T01:36:00.101Z",
+          "counts": {
+            "violations": 0,
+            "passes": 30,
+            "incomplete": 0,
+            "inapplicable": 38
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-005",
+          "state": "checkout-overview",
+          "url": "https://www.saucedemo.com/checkout-step-two.html",
+          "timestamp": "2026-10-10T01:36:03.491Z",
+          "counts": {
+            "violations": 0,
+            "passes": 27,
+            "incomplete": 0,
+            "inapplicable": 41
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-006",
+          "state": "checkout-complete",
+          "url": "https://www.saucedemo.com/checkout-complete.html",
+          "timestamp": "2026-10-10T01:35:54.045Z",
+          "counts": {
+            "violations": 0,
+            "passes": 26,
+            "incomplete": 0,
+            "inapplicable": 42
+          },
+          "violations": [],
+          "incomplete": [],
+          "countUnit": "ruleResults",
+          "incompleteReviewStatus": "Not Required"
+        }
+      ],
+      "manifests": [
+        {
+          "caseId": "A11Y-AUTO-001",
+          "completedScans": 2,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-002",
+          "completedScans": 3,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Pending"
+        },
+        {
+          "caseId": "A11Y-AUTO-003",
+          "completedScans": 2,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-004",
+          "completedScans": 4,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-005",
+          "completedScans": 1,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Not Required"
+        },
+        {
+          "caseId": "A11Y-AUTO-006",
+          "completedScans": 1,
+          "outcome": "PASS",
+          "complianceResult": "Not Evaluated",
+          "incompleteReviewStatus": "Not Required"
+        }
+      ],
+      "attachments": 19
+    }
+  },
+  "sourceHashMetadata": {
+    "algorithm": "SHA-256",
+    "input": "Raw file bytes at the time of the original verification; no text or line-ending normalization.",
+    "scope": "The six files listed in sourceHashes; not a hash of the complete repository or execution environment."
+  },
+  "sourceHashes": {
+    "pom.xml": "7e461ebaba5a647975deb37648641cb107dcfa0769945c6117a3746b2284f49f",
+    "src/test/java/com/david/qa/accessibility/AccessibilityAudit.java": "ff4f8f441de36befcf930d39281d66bf06ce82b0a63be087513397d02ab2a341",
+    "src/test/java/com/david/qa/tests/accessibility/AccessibilityTest.java": "f5bb1c5d51283e684591c323dc378854f0142a3f62bde57c4a7727b2e022d7bd",
+    "src/test/java/com/david/qa/listeners/AccessibilityEvidenceListener.java": "2775ba0b120540845f55a91ccd5c0813d9262c7436c110c080e3dda0174f0270",
+    "src/test/java/com/david/qa/pages/ProductsPage.java": "b237f3399661f4b6c60916debb9e0812d1cc0c59a79d05e77c6bd9e25e6d3c83",
+    "src/test/java/com/david/qa/pages/CheckoutInformationPage.java": "1b227f17f233d6271cfb32a2313a3047aded8707e91349a1a32a20dba9e1158f"
+  }
+}

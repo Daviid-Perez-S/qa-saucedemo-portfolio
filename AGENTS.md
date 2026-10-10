@@ -7,8 +7,8 @@
 - Application under test: https://www.saucedemo.com/.
 - Current stack: Java, Maven, Selenium WebDriver, TestNG, Page Object Model, and Allure Report.
 - The approved initial suite contains 15 functional test cases. Keep automation traceable to the approved test case IDs and keep the English and Spanish QA workbook editions aligned.
-- Current documented environment: personal laptop, Windows 11 25H2, and Google Chrome 154.0.8037.93. Treat the Chrome version as a snapshot that may change.
-- API testing is a separate project. Allure reporting and automatic failure evidence are implemented and verified. Accessibility testing and CI/CD with GitHub Actions are planned for later phases.
+- Current documented environment: personal laptop, Windows 11 25H2, and Google Chrome 154.0.8037.99 (verified 2026-10-09). Treat the Chrome version as a snapshot that may change.
+- API testing is a separate project. Allure reporting, automatic failure evidence and six accessibility tests with thirteen scans are implemented and verified. Manual accessibility evaluation and CI/CD with GitHub Actions remain planned.
 
 ## Working guidelines
 
@@ -23,6 +23,10 @@
 - Register `FailureEvidenceListener` centrally through ServiceLoader. Its `IInvokedMethodListener.afterInvocation()` captures only failed `@Test` methods, before Allure finalizes the result and before browser cleanup. Attempt a PNG screenshot and current URL independently; evidence errors must not replace or alter the original test failure. Keep tests and Page Objects free of reporting logic.
 - Let TestNG/Allure provide the exception, error message, and stack trace. Do not add manual error attachments, screenshots for successful tests, page source, console/network logs, video, reporting-only logging, or automatic retries. Configuration-method failures are reported by the adapter without browser evidence.
 - Store Allure results in `target/allure-results`, reports in `target/allure-report`, and keep `historyEnabled=false`. Generated `target/` content and the `.allure/` runtime cache stay ignored. Use `mvn clean test`, then `mvn allure:report` or `mvn allure:serve`; do not clean between a failed run and report generation.
+- Accessibility uses `com.deque.html.axe-core:selenium:4.13.0` with the bundled axe-core 4.13.0 engine. Exclude only WebDriverManager; Maven mediation selects the direct Selenium 4.49.0 dependency over its older transitive version. Retain DriverFactory/Selenium Manager. Keep exactly six TestNG methods and the thirteen approved state keys, using full-page scans and no impact/node suppression.
+- AccessibilityAudit owns the explicit WCAG A/AA configuration, state preparation/result integrity checks and aggregate decision. Enable target-size explicitly (disabled by default, not experimental), plus the five documented experimental WCAG rules. Retain all four result categories and keep incomplete human review separate from the automated outcome. Missing/invalid scans never PASS; any confirmed violation produces FAIL, preserving technical errors and later reachable scans.
+- AccessibilityEvidenceListener is registered through ServiceLoader and attaches scan JSONs and case manifests for passed and failed methods, including unexpected termination. Keep Allure calls out of tests/pages. Preserve original exceptions and leave FailureEvidenceListener unchanged; do not duplicate screenshots or standalone error attachments. A method-end screenshot is not evidence of every earlier scan state.
+- Surefire's default inclusion keeps `mvn clean test` functional (15). Use `mvn clean test "-Dtest=AccessibilityTest"` for accessibility (6), and `mvn clean test "-Dtest=*Test"` for all (21). Do not add profiles, suite XML, retries or parallel execution. Local validation archives under `.accessibility-verification/` are ignored and separate synthetic contract checks from real SauceDemo evidence.
 - Do not invent SauceDemo behavior, requirements, or defects. Document defects only when they are observed.
 - Do not copy code from other repositories. Use external material as reference and write project-specific implementation.
 - Keep the English and Spanish project documents aligned when either version changes.

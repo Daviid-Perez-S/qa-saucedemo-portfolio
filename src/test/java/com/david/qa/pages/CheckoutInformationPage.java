@@ -5,6 +5,7 @@ import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -47,14 +48,18 @@ public class CheckoutInformationPage {
 
     public void fillInformation(String firstName, String lastName, String postalCode) {
         WebElement firstNameField = wait.until(ExpectedConditions.visibilityOfElementLocated(firstNameInput));
-        firstNameField.clear();
+        // Keyboard deletion fires input events so controlled forms reset their application state too.
+        firstNameField.sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.BACK_SPACE);
         firstNameField.sendKeys(firstName);
         WebElement lastNameField = wait.until(ExpectedConditions.visibilityOfElementLocated(lastNameInput));
-        lastNameField.clear();
+        lastNameField.sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.BACK_SPACE);
         lastNameField.sendKeys(lastName);
         WebElement postalCodeField = wait.until(ExpectedConditions.visibilityOfElementLocated(postalCodeInput));
-        postalCodeField.clear();
+        postalCodeField.sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.BACK_SPACE);
         postalCodeField.sendKeys(postalCode);
+        wait.until(browser -> firstNameField.getDomProperty("value").equals(firstName)
+                && lastNameField.getDomProperty("value").equals(lastName)
+                && postalCodeField.getDomProperty("value").equals(postalCode));
     }
 
     public void clickContinue() {
@@ -63,5 +68,9 @@ public class CheckoutInformationPage {
 
     public String getErrorMessage() {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessage)).getText();
+    }
+
+    public void waitForErrorMessage(String expectedText) {
+        wait.until(ExpectedConditions.textToBe(errorMessage, expectedText));
     }
 }

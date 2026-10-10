@@ -15,6 +15,18 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.deque.html.axe-core</groupId>
+            <artifactId>selenium</artifactId>
+            <version>4.13.0</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.github.bonigarcia</groupId>
+                    <artifactId>webdrivermanager</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
             <version>3.0.0</version>
@@ -56,6 +68,12 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <!-- Use the native TestNG provider to avoid Allure results from discovery dry runs. -->
                 <version>3.5.6</version>
+                <configuration>
+                    <includes>
+                        <include>com/david/qa/tests/*Test.java</include>
+                    </includes>
+                    <failIfNoTests>true</failIfNoTests>
+                </configuration>
             </plugin>
         </plugins>
     </build>

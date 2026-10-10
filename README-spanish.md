@@ -4,7 +4,7 @@ Proyecto inicial de portafolio QA para planear y automatizar los flujos principa
 
 Esta versión en español es complementaria; GitHub mostrará `README.md` en inglés como portada principal. [Ver README principal](README.md).
 
-**Responsable:** David Pérez · **Estado:** documentación QA preparada; los 15 casos funcionales iniciales están automatizados y verificados; reporting Allure y evidencia automática de fallos verificados.
+**Responsable:** David Pérez · **Estado:** documentación QA preparada; los 15 casos funcionales iniciales están automatizados y verificados; reporting Allure y evidencia automática de fallos verificados; seis tests de accesibilidad y trece scans implementados y verificados.
 
 ## Objetivos del proyecto
 
@@ -12,7 +12,7 @@ Esta versión en español es complementaria; GitHub mostrará `README.md` en ing
 - Construir un proyecto mantenible de automatización de interfaz con Java, Maven, Selenium WebDriver, TestNG y Page Object Model.
 - Automatizar los 15 casos acordados y registrar resultados y defectos cuando se encuentren.
 - Generar reportes Allure con evidencia automática del navegador para tests fallidos.
-- Incorporar pruebas de accesibilidad y CI/CD con GitHub Actions en fases posteriores.
+- Mantener las pruebas de accesibilidad automatizadas; incorporar CI/CD con GitHub Actions en una fase posterior.
 
 API Testing se planea como proyecto de portafolio separado. El alcance inicial excluye rendimiento, seguridad, dispositivos móviles, pruebas exhaustivas en varios navegadores, backend y pagos reales.
 
@@ -27,7 +27,7 @@ API Testing se planea como proyecto de portafolio separado. El alcance inicial e
 
 Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chrome · Allure Report
 
-El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y Google Chrome 154.0.8037.93. La versión de Chrome es una referencia temporal y puede cambiar.
+El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y Google Chrome 154.0.8037.99. La versión de Chrome es una referencia temporal y puede cambiar.
 
 ## Cobertura de Automatización
 
@@ -74,10 +74,13 @@ Estructura actual de automatización:
 
 ```text
 src/test/java/com/david/qa/
+├── accessibility/
+│   └── AccessibilityAudit.java
 ├── driver/
 │   └── DriverFactory.java
 ├── listeners/
-│   └── FailureEvidenceListener.java
+│   ├── FailureEvidenceListener.java
+│   └── AccessibilityEvidenceListener.java
 ├── pages/
 │   ├── LoginPage.java
 │   ├── ProductsPage.java
@@ -91,7 +94,9 @@ src/test/java/com/david/qa/
     ├── ProductsTest.java
     ├── CartTest.java
     ├── CheckoutTest.java
-    └── EndToEndTest.java
+    ├── EndToEndTest.java
+    └── accessibility/
+        └── AccessibilityTest.java
 ```
 
 Los recursos de test contienen `allure.properties` y `META-INF/services/org.testng.ITestNGListener`.
@@ -130,9 +135,26 @@ Detener el servidor con `Ctrl+C`. El plugin descarga su runtime privado de Node.
 
 Si una ejecución falla, ejecutar el comando de reporte por separado sin ejecutar `clean` entre ambos, para conservar sus resultados y evidencia. Utilizar `mvn clean test` para una ejecución nueva y evitar mezclar resultados de distintas ejecuciones.
 
-Los métodos `@Test` fallidos reciben únicamente un screenshot PNG del navegador y la URL actual como adjunto de texto, cuando el navegador está disponible. TestNG/Allure proporciona la excepción, el mensaje y el stack trace originales. Los tests exitosos no reciben evidencia del navegador; los fallos de configuración se reportan sin evidencia del navegador. Los tests y Page Objects no contienen lógica de reporting. No se incorporan retries, logging adicional, page source, console/network logs ni video.
+Los métodos `@Test` funcionales fallidos reciben un screenshot PNG del navegador y la URL actual como adjunto de texto, cuando el navegador está disponible. TestNG/Allure proporciona la excepción, el mensaje y el stack trace originales. Los tests exitosos no reciben evidencia del navegador; los fallos de configuración se reportan sin evidencia del navegador. Los tests y Page Objects no contienen lógica de reporting. No se incorporan retries, logging adicional, page source, console/network logs ni video.
 
 La validación del 2 de octubre de 2026 confirmó 15 tests, 0 failures, 0 errors y 0 skipped, con exactamente 15 resultados Allure únicos y sin adjuntos de tests exitosos. Un fallo controlado temporal en TC-LOGIN-001 produjo un resultado fallido con exactamente dos adjuntos (PNG y URL de inventory) y los detalles originales del `AssertionError`. La assertion temporal fue retirada; la suite completa volvió a pasar y el reporte final contiene exactamente 15 tests aprobados.
+
+
+## Accesibilidad automatizada
+
+Se implementaron y verificaron los seis casos aprobados y trece scans con axe-core 4.13.0. Los tests funcionales existentes mantienen sus quince métodos.
+
+```shell
+mvn clean test
+mvn clean test "-Dtest=AccessibilityTest"
+mvn clean test "-Dtest=*Test"
+```
+
+Los modos Functional / Accessibility / All produjeron respectivamente 15 / 6 / 21 resultados TestNG y Allure el 2026-10-09. Las ejecuciones finales completaron los trece estados con cero violaciones y errores técnicos. Hay cuatro estados con color-contrast incomplete pendientes de revisión humana; no se declara conformidad WCAG.
+
+AccessibilityAudit mantiene configuración, validación de estados/resultados y aserción final. AccessibilityEvidenceListener adjunta JSON por scan y manifiesto por caso, también en PASS; el listener de fallo mantiene captura/URL sin duplicación. No se cambió BaseTest ni los quince tests funcionales. Las variantes consecutivas de checkout usan borrado por teclado para actualizar el estado del formulario. Surefire permanece en 3.5.6, sin perfiles ni ejecución paralela. Las diez categorías manuales siguen Planned / Not Executed.
+
+[Resultados y limitaciones](docs/accessibility/accessibility-test-results-spanish.md) · [Resumen verificable](docs/accessibility/accessibility-execution-summary.json).
 
 ## Aplicación bajo prueba
 

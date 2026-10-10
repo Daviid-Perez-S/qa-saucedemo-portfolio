@@ -1,70 +1,75 @@
 # Accessibility Test Results
 
-Project: `qa-saucedemo-portfolio`  
-Application: https://www.saucedemo.com/  
-Document version: 1.0  
-Documentation baseline date: 2026-10-08  
-Evaluation target: WCAG 2.2 A / AA
+Version: 1.1. Local execution: 2026-10-09 (UTC−06:00). Baseline: WCAG 2.2 A/AA.
 
-## Current baseline
+Six TestNG methods and thirteen scans were implemented and verified. Final runs detected no violations; all required scans completed in the expected state. This does not establish WCAG 2.2 AA conformance. All ten manual categories remain Planned / Not Executed and Compliance Result remains Not Evaluated.
 
-No accessibility execution results are available. Axe integration and the six accessibility TestNG cases are Planned / Not Implemented. No PASS, FAIL, accessibility defect, screenshot or Allure accessibility run is reported. Source-code observations in REF-02 are not accessibility test results. The 15 existing functional tests are outside the accessibility result counts and were not rerun here.
+## Verified executions
 
-Status values are identical in both editions: Implementation Status = Planned / Not Implemented (automated) or Planned (manual); Execution Status = Not Executed; Compliance Result = Not Evaluated. Manual lifecycle is Planned / Not Executed. Applicable and To Be Confirmed describe preliminary applicability, not compliance.
+| Mode | Command | Tests | PASS | FAIL / Broken / Skipped | Scans | Allure results |
+| --- | --- | ---: | ---: | --- | ---: | ---: |
+| Functional | `mvn clean test` | 15 | 15 | 0 / 0 / 0 | 0 | 15 |
+| Accessibility | `mvn clean test "-Dtest=AccessibilityTest"` | 6 | 6 | 0 / 0 / 0 | 13 | 6 |
+| All | `mvn clean test "-Dtest=*Test"` | 21 | 21 | 0 / 0 / 0 | 13 | 21 |
 
-## Automated case results
+All three commands ended with BUILD SUCCESS. One result per method, without duplicate results. Each accessibility-containing run retains 13 scan JSONs and 6 manifests (19 attachments), without successful-test screenshots. Allure Report 3.20.0 was generated for the All run.
 
-| ID | Case | Required scans | Implementation Status | Execution Status | Automated outcome | Compliance Result | Evidence |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| A11Y-AUTO-001 | Login | 2 | Planned / Not Implemented | Not Executed | Not Available | Not Evaluated | Not available — no run |
-| A11Y-AUTO-002 | Products | 3 | Planned / Not Implemented | Not Executed | Not Available | Not Evaluated | Not available — no run |
-| A11Y-AUTO-003 | Cart with product | 2 | Planned / Not Implemented | Not Executed | Not Available | Not Evaluated | Not available — no run |
-| A11Y-AUTO-004 | Checkout Information | 4 | Planned / Not Implemented | Not Executed | Not Available | Not Evaluated | Not available — no run |
-| A11Y-AUTO-005 | Checkout Overview | 1 | Planned / Not Implemented | Not Executed | Not Available | Not Evaluated | Not available — no run |
-| A11Y-AUTO-006 | Checkout Complete | 1 | Planned / Not Implemented | Not Executed | Not Available | Not Evaluated | Not available — no run |
+## Case results
 
-Planned scope: six tests and thirteen scans. Completed run count and executed scan count are not available. Planned counts are not execution evidence.
+| ID | Required / completed scans | Implementation Status | Execution Status | Automated outcome | Compliance Result |
+| --- | --- | --- | --- | --- | --- |
+| A11Y-AUTO-001 | 2 / 2 | Implemented / Verified | Executed | PASS | Not Evaluated |
+| A11Y-AUTO-002 | 3 / 3 | Implemented / Verified | Executed | PASS | Not Evaluated |
+| A11Y-AUTO-003 | 2 / 2 | Implemented / Verified | Executed | PASS | Not Evaluated |
+| A11Y-AUTO-004 | 4 / 4 | Implemented / Verified | Executed | PASS | Not Evaluated |
+| A11Y-AUTO-005 | 1 / 1 | Implemented / Verified | Executed | PASS | Not Evaluated |
+| A11Y-AUTO-006 | 1 / 1 | Implemented / Verified | Executed | PASS | Not Evaluated |
 
-## Violations, technical errors and incomplete
+## Findings by state
 
-| Metric | Current value | Reason |
-| --- | --- | --- |
-| Axe violations and impact breakdown | Not Available | Axe has not been executed |
-| Affected nodes and rule counts | Not Available | No structured scan output |
-| Technical errors | Not Available | No accessibility run |
-| incomplete | Not Available | No scan output to review |
-| passes / inapplicable | Not Available | No scan output; neither establishes WCAG conformance |
-| Confirmed defects | Not Available | No executed evaluation from which to report defects |
+| Case | State | Violations | incomplete rules / nodes | Review |
+| --- | --- | ---: | --- | --- |
+| A11Y-AUTO-001 | `login-initial` | 0 | 0 | Not Required |
+| A11Y-AUTO-001 | `login-invalid-credentials` | 0 | color-contrast: 1 node(s) | Pending |
+| A11Y-AUTO-002 | `products-initial` | 0 | color-contrast: 2 node(s) | Pending |
+| A11Y-AUTO-002 | `products-product-added` | 0 | color-contrast: 2 node(s) | Pending |
+| A11Y-AUTO-002 | `products-menu-open` | 0 | color-contrast: 2 node(s) | Pending |
+| A11Y-AUTO-003 | `cart-with-product` | 0 | 0 | Not Required |
+| A11Y-AUTO-003 | `cart-empty` | 0 | 0 | Not Required |
+| A11Y-AUTO-004 | `checkout-information-initial` | 0 | 0 | Not Required |
+| A11Y-AUTO-004 | `checkout-error-first-name` | 0 | 0 | Not Required |
+| A11Y-AUTO-004 | `checkout-error-last-name` | 0 | 0 | Not Required |
+| A11Y-AUTO-004 | `checkout-error-postal-code` | 0 | 0 | Not Required |
+| A11Y-AUTO-005 | `checkout-overview` | 0 | 0 | Not Required |
+| A11Y-AUTO-006 | `checkout-complete` | 0 | 0 | Not Required |
 
-Missing results are not zero violations. On execution, count violations, distinct rules, affected nodes and incomplete separately, retaining state identity. Document any deduplication used across states. Technical errors must never be counted as WCAG violations.
+Violations: 0, distinct violated rules: 0, violated nodes: 0. Final technical errors: 0. There are 4 incomplete rule occurrences across 4 states, with 7 node occurrences; occurrences are not deduplicated across states. `color-contrast` requires human review of elements and backgrounds; it is not converted into a contrast PASS or a confirmed defect. Full selectors/checks are retained in JSON. `passes` and `inapplicable` are retained and do not establish conformance or WCAG Not Applicable.
 
-### Interpretation after future execution
+## Environment and evidence
 
-Automated PASS requires every mandatory scan to complete in the correct state with zero violations. Any detected violation produces FAIL, including runs with technical errors or missing scans. Retain and document violations, technical errors and incomplete execution by case/state. Report navigation, setup, injection, timeout or axe failures as Technical Error; never report PASS if a mandatory scan is missing or unfinished. Preserve axe incomplete separately for human review without automatically classifying it as PASS or FAIL. A PASS covers only executed rules and states and does not establish WCAG conformance.
+- Java `25.0.4.1`; Selenium `4.49.0`; TestNG `7.12.0`; Allure TestNG `3.0.0`; Surefire `3.5.6` (native TestNG provider).
+- axe Java integration / engine `4.13.0`; Allure Maven Plugin `3.1.0`; Report `3.20.0`.
+- Effective transitive dependencies: deque `utilities 4.13.0`, `commons-io 2.22.0`, `commons-lang3 3.20.0`, Jackson `databind/core 2.22.1` and `annotations 2.22`. Only WebDriverManager was excluded; Maven selected direct Selenium `4.49.0` over transitive `4.13.0`.
+- Windows 11 10.0; Chrome `154.0.8037.99`; viewport `1036×647` CSS px; devicePixelRatio `1.25`; visualViewportScale `1`.
+- Tags: `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`.
+- Experimental enabled: `css-orientation-lock`, `label-content-name-mismatch`, `p-as-heading`, `table-fake-caption`, `td-has-header`.
+- `target-size`: enabled explicitly; disabled by default, **not experimental** in the selected engine.
+- All run ID: `1c39d6a1-dbad-4010-b900-7f92101f27a8`. UTC scan timestamps: `2026-10-10T01:35:49.403Z` to `2026-10-10T01:36:11.155Z`.
+- Baseline commit: `332af2851839bd4f906998b7ae5a362176a3b6fd` plus uncommitted implementation; source hashes recorded in the summary.
 
-Track incomplete review as Pending, Reviewed or Resolved independently of the automated assertion. A zero-violation automated PASS with pending incomplete still requires human review and never changes Compliance Result to conformant. Preserve both detected violations and any technical error in a partially completed case.
+[Verifiable execution summary](accessibility-execution-summary.json) records case IDs, versions, hashes, audit configuration, state results and pending human reviews. Local Allure identifiers and attachment filenames are omitted from this public summary. Local All evidence: `target/allure-results/`; report: `target/allure-report/`. Local archives for the three modes: `.accessibility-verification/functional-final/`, `.accessibility-verification/accessibility-final/` and `.accessibility-verification/all-final/`, ignored by Git. No report URL was published. `clean` removes target: preserve/export evidence before another run.
 
-## Run and evidence register
+## Contract verification and limitations
 
-| Field | Current value / future requirement |
-| --- | --- |
-| Run ID / execution timestamp | Not Available |
-| Commit or deployed build reference | Not Available |
-| OS / Chrome / viewport / zoom | Not Available |
-| axe-core / Java integration / enabled tags and rules | Not Selected / Not Implemented |
-| NVDA / manual tools | Not Recorded — Not Executed |
-| Allure report URL / run reference | Not Available |
-| Evidence location | Not Available |
+Eight synthetic checks, outside the approved suites and real SauceDemo evidence, verified PASS, violations, technical error, missing scan, invalid result, mixed outcome, continuation after a violation and unexpected termination. Allure classified AssertionError as failed and technical errors as broken; the unexpected case retained the original exception. A separate synthetic page with two 8×8 CSS px buttons produced serious target-size findings on two nodes. These findings are not SauceDemo defects.
 
-For the next real run, attach structured axe data for every case/state: URL, timestamp, versions/configuration, rule ID, impact, tags/help URL, affected nodes and failure summaries, plus passes, incomplete and inapplicable. Include stage and exception details for technical errors. A screenshot and URL must identify the captured state; no placeholder evidence links are provided.
+During development, the initial integrity check rejected a rule occurring in different categories; it was corrected to permit different node outcomes. A technical preparation error also occurred when chaining checkout variants with clear(): the form advanced to Overview. Keyboard selection/deletion corrected the preparation, and final runs completed all four variants. FailureEvidenceListener remained unchanged; its screenshot/URL were verified during the real development technical failure.
+
+Chrome 154 emitted a CDP warning (Selenium provides 153); WebDriver flows and scans completed and do not use CDP. SLF4J reported no provider; no logging dependency was added. No final technical errors remain. visualViewport scale was recorded; Chrome desktop zoom was not independently measured. The four incomplete findings, experimental rules and ten manual categories require attention before conclusions about accessibility.
 
 ## Defect register
 
-No defect entries have been created because no accessibility evaluation has been executed. Add rows only when a real issue is identified. Future records must include defect ID, run, case and state, title, rule/SC, impact and triage priority, URL, affected element, reproduction steps, expected/actual behavior, evidence link, disposition and retest outcome. A tool violation is evidence for triage; it must not be silently equated with whole-criterion failure without contextual review.
-
-| Defect ID | Case / state | SC / rule | Actual behavior | Evidence | Status / retest |
-| --- | --- | --- | --- | --- | --- |
-
+No confirmed accessibility defects are documented. Zero automated violations does not resolve incomplete findings or manual evaluation.
 
 ## Manual evaluation status
 
@@ -83,33 +88,8 @@ No defect entries have been created because no accessibility evaluation has been
 
 Expected results in the workbook are future acceptance objectives, not observed outcomes. No manual category has passed or failed.
 
-## Coverage and limitations
+## Preserved coverage
 
-| Case ID | Page | Required scan states | Scan count |
-| --- | --- | --- | --- |
-| A11Y-AUTO-001 | Login | login-initial, login-invalid-credentials | 2 |
-| A11Y-AUTO-002 | Products | products-initial, products-product-added, products-menu-open | 3 |
-| A11Y-AUTO-003 | Cart with product | cart-with-product, cart-empty | 2 |
-| A11Y-AUTO-004 | Checkout Information | checkout-information-initial, checkout-error-first-name, checkout-error-last-name, checkout-error-postal-code | 4 |
-| A11Y-AUTO-005 | Checkout Overview | checkout-overview | 1 |
-| A11Y-AUTO-006 | Checkout Complete | checkout-complete | 1 |
+Scope remains six cases, thirteen states and 55 A/AA criteria: 37 Applicable and 18 To Be Confirmed; no closed N/A. Excluded routes and generated-PDF evaluation remain excluded. A rendered PDF control is included only in the Complete scan. Matrix relationships indicate partial coverage, not conformance evidence. NVDA and manual evaluation were not executed.
 
-The matrix retains 55 A/AA criteria, with 37 preliminarily Applicable and 18 To Be Confirmed. No N/A is closed. For 2.2.2, source evidence relates to the excluded Slider, so broader applicability does not create completed or planned initial-route coverage. Product detail references for 2.4.5 are deferred. Six future tests cover representative main-flow states, not all WCAG requirements or the entire application.
-
-Excluded: additional dynamic/long catalogs, product detail, additional Slider/Spinner, PDF generation and generated-PDF accessibility. A PDF control rendered on Complete is included in that page scan. Keyboard behavior, focus, NVDA announcements, reflow, spacing, timing and semantic adequacy require the planned human evaluation. Static lang, title, ARIA or alternative-text observations do not establish compliance.
-
-## Update procedure
-
-1. Implement and verify accessibility integration and independent Maven selections: Functional=15, Accessibility=6, All=21. Add definitive commands only after validation.
-2. Record the actual run/environment and all thirteen required state outcomes, with Allure evidence.
-3. Update implementation, execution and automated outcomes independently of compliance.
-4. Triage real violations and technical errors, review incomplete and link real defects/retests.
-5. Perform manual categories separately; update only those actually executed and retain unverified applicability questions.
-6. Synchronize both language editions and workbook rows by stable IDs. Report “no violations detected by the executed rules and states” only when supported. Do not claim SauceDemo WCAG 2.2 AA conformance.
-
-## References
-
-- REF-01: Embedded approved project contract. Documentation only for qa-saucedemo-portfolio: 15 existing functional tests using Java 25, Selenium, TestNG, Maven, Page Object Model and Allure. Initial scope: Login → Products → Cart → Checkout Information → Checkout Overview → Checkout Complete, including the defined errors, cart changes and open side menu. Exactly six automated cases with thirteen required scans, ten manual categories, four sheets per workbook and fifty-five WCAG 2.2 A/AA criteria; planned future Maven selections: Functional=15, Accessibility=6, All=21. Additional dynamic/long catalogs, product detail, Slider/Spinner, PDF generation and generated-PDF accessibility are excluded; a rendered PDF control is included. Preserve the provisional 37 Applicable / 18 To Be Confirmed classification, Not Executed / Not Evaluated baseline, separate status dimensions and bilingual equivalence. No implementation, execution evidence or conformance claim is implied.
-- REF-02: Embedded historical technical baseline, not current verification. §1 Project observations: 15 functional tests; Selenium 4.49.0, TestNG 7.12.0, Allure TestNG 3.0.0 and Surefire 3.5.6; no axe integration or independent suite selections. The functional listener records failure screenshot/URL, not axe data; DriverFactory restricts password-manager assistance. §2 Static application observations: lang=en, title Swag Labs, product/confirmation images and graphical controls, cart badge/name changes, side menu/submenu, required-field validation and role=alert errors with a dismissal control. A 600-second session cookie and guarded routes were reported; the excluded Slider updates every two seconds and Spinner uses role=status. Completion conditionally renders a PDF control. Criterion-specific observations and scope limits are reproduced in the WCAG Coverage Matrix; they are not rendered-state test results. Browser interaction was unavailable, and inspection date/build reference were not recorded. §3 Public demo credentials and synthetic checkout data are reproduced in Test Data. These historical observations are not independently reverified in this revision; REF-03 provides the public normative requirements.
-- REF-03: [W3C WCAG 2.2 specification](https://www.w3.org/TR/WCAG22/), consulted 2026-10-08 for criterion names, levels and normative requirements.
-- REF-04: [axe-core rule descriptions](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md) and [axe-core API](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md). Future mapping must use the selected release, not an unpinned development branch.
+The matrix records partial automated rule execution for 22 criteria, including axe inapplicable results; this does not determine WCAG applicability or fully evaluate a criterion. All 55 criteria remain Not Evaluated.

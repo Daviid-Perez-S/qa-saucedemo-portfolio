@@ -25,6 +25,9 @@ public class ProductsPage {
     private final By removeBackpackButton = By.id("remove-sauce-labs-backpack");
     private final By cartBadge = By.cssSelector("[data-test='shopping-cart-badge']");
     private final By cartLink = By.cssSelector("[data-test='shopping-cart-link']");
+    private final By menuButton = By.id("react-burger-menu-btn");
+    private final By menuPanel = By.cssSelector(".bm-menu-wrap");
+    private final By logoutLink = By.id("logout_sidebar_link");
 
     public ProductsPage(WebDriver driver) {
         this.driver = driver;
@@ -99,5 +102,14 @@ public class ProductsPage {
 
     public void openCart() {
         wait.until(ExpectedConditions.elementToBeClickable(cartLink)).click();
+    }
+
+    public void openMenu() {
+        wait.until(ExpectedConditions.elementToBeClickable(menuButton)).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(logoutLink));
+        wait.until(browser -> Boolean.TRUE.equals(((org.openqa.selenium.JavascriptExecutor) browser).executeScript(
+                "const panel = arguments[0]; return panel.getAttribute('aria-hidden') === 'false'"
+                        + " && panel.getAnimations().every(a => a.playState === 'finished')"
+                        + " && panel.getBoundingClientRect().right <= innerWidth;", browser.findElement(menuPanel))));
     }
 }

@@ -4,7 +4,7 @@ An early-stage QA portfolio project for planning and automating core user flows 
 
 This English `README.md` is the primary GitHub landing page. [Read the Spanish version](README-spanish.md).
 
-**Project owner:** David Pérez · **Status:** QA documentation prepared; all 15 initial functional test cases automated and verified; Allure reporting and automatic failure evidence verified.
+**Project owner:** David Pérez · **Status:** QA documentation prepared; all 15 initial functional test cases automated and verified; Allure reporting and automatic failure evidence verified; six accessibility tests and thirteen scans implemented and verified.
 
 ## Project goals
 
@@ -12,7 +12,7 @@ This English `README.md` is the primary GitHub landing page. [Read the Spanish v
 - Build a maintainable Java UI automation project using Maven, Selenium WebDriver, TestNG, and Page Object Model.
 - Automate the 15 agreed cases and record results and defects when found.
 - Generate Allure reports with automatic browser evidence for failed tests.
-- Add accessibility testing and GitHub Actions CI/CD in later phases.
+- Maintain automated accessibility testing; add GitHub Actions CI/CD in a later phase.
 
 API testing is planned as a separate portfolio project. The initial scope excludes performance, security, mobile, exhaustive cross-browser, backend, and real payment testing.
 
@@ -27,7 +27,7 @@ API testing is planned as a separate portfolio project. The initial scope exclud
 
 Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chrome · Allure Report
 
-The test environment currently documented is a personal laptop running Windows 11 25H2 and Google Chrome 154.0.8037.93. The Chrome version is a snapshot and may change.
+The test environment currently documented is a personal laptop running Windows 11 25H2 and Google Chrome 154.0.8037.99. The Chrome version is a snapshot and may change.
 
 ## Automation Coverage
 
@@ -74,10 +74,13 @@ Current automation structure:
 
 ```text
 src/test/java/com/david/qa/
+├── accessibility/
+│   └── AccessibilityAudit.java
 ├── driver/
 │   └── DriverFactory.java
 ├── listeners/
-│   └── FailureEvidenceListener.java
+│   ├── FailureEvidenceListener.java
+│   └── AccessibilityEvidenceListener.java
 ├── pages/
 │   ├── LoginPage.java
 │   ├── ProductsPage.java
@@ -91,7 +94,9 @@ src/test/java/com/david/qa/
     ├── ProductsTest.java
     ├── CartTest.java
     ├── CheckoutTest.java
-    └── EndToEndTest.java
+    ├── EndToEndTest.java
+    └── accessibility/
+        └── AccessibilityTest.java
 ```
 
 Test resources contain `allure.properties` and `META-INF/services/org.testng.ITestNGListener`.
@@ -130,9 +135,26 @@ Stop the server with `Ctrl+C`. The plugin downloads its private Node.js runtime 
 
 If a test run fails, run the report command separately without running `clean` in between, so its results and evidence remain available. Use `mvn clean test` for a fresh execution to avoid mixing results from different runs.
 
-Failed `@Test` methods receive only a browser PNG screenshot and current URL as a text attachment, when the browser is available. TestNG/Allure supplies the original exception, message, and stack trace. Successful tests receive no browser evidence; configuration failures are reported without browser evidence. Tests and Page Objects contain no reporting logic. No retries, additional logging, page source, console/network logs, or video are collected.
+Failed functional `@Test` methods receive a browser PNG screenshot and current URL as a text attachment, when the browser is available. TestNG/Allure supplies the original exception, message, and stack trace. Successful tests receive no browser evidence; configuration failures are reported without browser evidence. Tests and Page Objects contain no reporting logic. No retries, additional logging, page source, console/network logs, or video are collected.
 
 Validation on October 2, 2026 confirmed 15 tests, 0 failures, 0 errors, and 0 skipped, with exactly 15 unique Allure results and no successful-test attachments. A temporary controlled failure in TC-LOGIN-001 produced one failed result with exactly two attachments (PNG and inventory URL) and the original `AssertionError` details. The temporary assertion was removed; the full suite passed again and the final report contains exactly 15 passed tests.
+
+
+## Automated accessibility
+
+The six approved cases and thirteen scans were implemented and verified with axe-core 4.13.0. Existing functional tests retain their fifteen methods.
+
+```shell
+mvn clean test
+mvn clean test "-Dtest=AccessibilityTest"
+mvn clean test "-Dtest=*Test"
+```
+
+Functional / Accessibility / All produced respectively 15 / 6 / 21 TestNG and Allure results on 2026-10-09. Final runs completed all thirteen states with zero violations and technical errors. Four states have color-contrast incomplete findings pending human review; WCAG conformance is not established.
+
+AccessibilityAudit owns configuration, state/result validation and final assertion. AccessibilityEvidenceListener attaches scan JSONs and case manifests, including PASS cases; the failure listener retains screenshot/URL without duplication. BaseTest and the fifteen functional tests are unchanged. Consecutive checkout variants use keyboard deletion to update controlled-form state. Surefire remains 3.5.6, without profiles or parallel execution. All ten manual categories remain Planned / Not Executed.
+
+[Results and limitations](docs/accessibility/accessibility-test-results.md) · [Verifiable summary](docs/accessibility/accessibility-execution-summary.json).
 
 ## Application under test
 

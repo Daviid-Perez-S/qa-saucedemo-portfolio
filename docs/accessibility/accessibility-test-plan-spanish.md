@@ -2,17 +2,17 @@
 
 Proyecto: `qa-saucedemo-portfolio`  
 Aplicación: https://www.saucedemo.com/  
-Versión del documento: 1.0  
-Fecha de documentación: 2026-10-08  
+Versión del documento: 1.1
+Fecha de actualización: 2026-10-09
 Línea base: WCAG 2.2 A / AA
 
 ## Propósito y estado actual
 
-Definir una evaluación futura de accesibilidad del proceso principal de compra. Esta entrega crea exclusivamente documentación. No se ha integrado axe, ejecutado tests de accesibilidad ni realizado evaluación manual. No se establece conformidad WCAG 2.2 AA de SauceDemo.
+Definir la evaluación de accesibilidad del proceso principal de compra. La integración axe y los seis casos automatizados con trece scans fueron implementados y verificados el 2026-10-09. Consultar Test Results para resultados reales. La evaluación manual sigue pendiente y no se establece conformidad WCAG 2.2 AA.
 
-Los estados son idénticos en ambas ediciones: Implementation Status = Planned / Not Implemented (automatizado) o Planned (manual); Execution Status = Not Executed; Compliance Result = Not Evaluated. Ciclo manual: Planned / Not Executed. Applicable (aplicable) y To Be Confirmed (por confirmar) describen aplicabilidad preliminar, no conformidad.
+Estados automatizados: Implementation Status = Implemented / Verified; Execution Status = Executed. Resultado automático separado de Compliance Result = Not Evaluated. Ciclo manual: Planned / Not Executed. Applicable y To Be Confirmed siguen siendo aplicabilidad preliminar.
 
-La línea base aprobada reporta 15 tests funcionales con Java 25, Selenium, TestNG, Maven, Page Object Model y Allure. REF-02 reporta Selenium 4.49.0, TestNG 7.12.0, Allure TestNG 3.0.0 y Surefire 3.5.6 de una inspección previa de configuración. Son observaciones de la fuente, no versiones verificadas en esta tarea ni evidencia de ejecución de accesibilidad.
+Se verificó mediante Maven Java 25.0.4.1, Selenium 4.49.0, TestNG 7.12.0, Allure TestNG 3.0.0 y Surefire 3.5.6. Se utiliza com.deque.html.axe-core:selenium:4.13.0 y motor axe-core 4.13.0. Solo se excluye WebDriverManager. La mediación Maven selecciona Selenium directo 4.49.0 sobre el transitivo 4.13.0; se conserva DriverFactory/Selenium Manager.
 
 ## Alcance
 
@@ -24,7 +24,7 @@ Excluidos inicialmente: catálogos dinámicos adicionales, catálogo largo, deta
 
 ## Revisión de la fuente y matriz de cobertura
 
-El workbook reutiliza la matriz detallada de REF-02: 55 criterios A/AA vigentes, 37 Applicable y 18 To Be Confirmed, sin decisiones Not Applicable cerradas. Conserva nombres oficiales ingleses en ambas ediciones, niveles, métodos y relaciones con casos. Both significa automatización parcial más evaluación humana planificada. Las relaciones automatizadas son provisionales hasta verificar versión y etiquetas axe.
+El workbook reutiliza la matriz detallada de REF-02: 55 criterios A/AA vigentes, 37 Applicable y 18 To Be Confirmed, sin decisiones Not Applicable cerradas. Conserva nombres oficiales ingleses en ambas ediciones, niveles, métodos y relaciones con casos. Both significa automatización parcial más evaluación humana planificada. Se verificaron versión y etiquetas axe. La matriz registra ejecución parcial de reglas automáticas para 22 criterios; los 55 criterios permanecen Not Evaluated y la evaluación manual sigue pendiente.
 
 Conciliación del alcance: 2.2.2 conserva aplicabilidad de la fuente para la aplicación ampliada porque su evidencia es el Slider excluido. El contenido que active el requisito en el flujo aprobado está To Be Confirmed y la ruta excluida queda diferida. En 2.4.5, revisar navegación aprobada y excepciones del proceso; diferir detalle/extensiones de catálogo. En 4.1.3, revisar errores/carrito dentro de alcance, no carga dinámica excluida. La matriz explicita estas distinciones.
 
@@ -45,11 +45,11 @@ Para cerrar Not Applicable, registrar alcance/estados inspeccionados, fecha, con
 
 Total: 13 escaneos axe obligatorios dentro de exactamente seis tests TestNG. Las claves de estado identifican evidencia, no nuevos casos. No se requiere inicialmente escaneo adicional de usuario bloqueado, ordenamiento, submenú ni formulario completo.
 
-Aplicación disponible. Chrome nuevo y estado conocido de sesión/carrito. Fijar en el futuro la versión y configuración de reglas axe. Esperar explícitamente el estado esperado, imágenes y fuentes antes de escanear la página renderizada completa.
+Aplicación disponible. Chrome nuevo y estado conocido de sesión/carrito. La versión y configuración axe están fijadas en AccessibilityAudit. Esperar explícitamente el estado esperado, imágenes y fuentes antes de escanear la página renderizada completa.
 
 Preparar cada caso de forma independiente con credenciales públicas y datos sintéticos de Test Data. Llegar a Resumen y Confirmación por el proceso real. Restablecer campos antes de cada variante para omitir solo uno. Confirmar página/estado antes de cada escaneo. Recopilar resultados de todos los estados obligatorios alcanzables antes de la aserción final cuando sea posible; una primera violación no debe ocultar evidencia posterior.
 
-Seleccionar y fijar posteriormente axe-core y su integración Java. Verificar reglas A/AA WCAG 2.0/2.1/2.2 disponibles, incluida inclusión explícita de target-size. No asumir activación predeterminada de reglas WCAG 2.2. Registrar etiquetas/reglas habilitadas, deshabilitadas y motivos; no ocultar fallos mediante filtros de severidad o exclusiones sin fundamento. No se inventan aquí versiones, dependencias ni comandos definitivos.
+Configuración fijada en AccessibilityAudit: `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`. Habilitación explícita de target-size y las experimentales `css-orientation-lock`, `label-content-name-mismatch`, `p-as-heading`, `table-fake-caption`, `td-has-header`. target-size está deshabilitada por defecto y no es experimental. Las reglas deprecadas, AAA, best-practice y obsolete quedan fuera de la línea base. No se filtran impactos ni nodos. Se comprueban motor, inventario y presencia de resultados de todas las reglas seleccionadas. Se conservan violations, passes, incomplete e inapplicable.
 
 ### Regla del resultado automatizado
 
@@ -82,23 +82,23 @@ Condiciones manuales medibles: texto hasta 200%; reflow vertical a 320 CSS px de
 
 Por caso y escaneo conservar: ID de ejecución, fecha/hora, ID del caso, clave de estado, URL, entorno, versión/configuración axe, preparación y estado de ejecución. Adjuntar salida axe estructurada con violations, passes, incomplete e inapplicable. Las violaciones incluyen regla, etiquetas WCAG, impacto, descripción/URL de ayuda, nodos/selectores/HTML y resumen de fallo. Asociar captura/URL al estado donde se obtuvo evidencia. Conservar errores técnicos con etapa, excepción, mensaje y traza. Las capturas apoyan evidencia pero no sustituyen salida estructurada.
 
-El listener existente reporta capturas y URLs de fallos funcionales; aún no existe integración de evidencia axe. Mantener reporting fuera de Page Objects y lógica de escenarios al implementar. Publicar solo referencias reales a ejecuciones/Allure y retirar datos personales accidentales.
+AccessibilityEvidenceListener registra JSON por scan y manifiesto por caso antes del cierre Allure, incluso si el método aborta. FailureEvidenceListener conserva sus screenshots/URL sin modificaciones. Los errores originales se conservan. Reporting permanece fuera de Page Objects y tests; los tests solo preparan estados y solicitan análisis.
 
-## Modos futuros de ejecución y cierre
+## Modos de ejecución verificados y cierre
 
 | Modo | Tests previstos | Implementación |
 | --- | --- | --- |
-| Functional | 15 | Planned |
-| Accessibility | 6 | Planned |
-| All | 21 | Planned |
+| Functional | 15 | Verified |
+| Accessibility | 6 | Verified |
+| All | 21 | Verified |
 
-Los tres modos Maven son selecciones independientes planificadas. Se podrán considerar grupos TestNG o suites/perfiles; configuración y comandos deben implementarse y verificarse antes de documentarlos como ejecutables. Para iniciar se requieren versiones/reglas seleccionadas, entorno reproducible y preparación estable. La ejecución automatizada termina solo cuando los trece escaneos tienen resultado y evidencia. Completar automatización no completa evaluación humana. Actualizar resultados y defectos reales tras ejecutar; conservar pendientes categorías manuales hasta realizarlas.
+Modos verificados sin perfiles ni suite XML: Functional `mvn clean test` (15); Accessibility `mvn clean test "-Dtest=AccessibilityTest"` (6); All `mvn clean test "-Dtest=*Test"` (21). Surefire 3.5.6 incluye por defecto com/david/qa/tests/*Test.java y -Dtest sustituye esa inclusión. Ejecutar mvn allure:report o mvn allure:serve después del test, sin clean intermedio. Cada nuevo modo empieza con clean test; conservar evidencia antes de limpiar. La ejecución manual sigue pendiente.
 
 ## Entregables y referencias
 
 Inglés es la documentación principal del repositorio; español es traducción equivalente. Cada workbook contiene exactamente cuatro hojas: Automated Accessibility, Manual Accessibility, Test Data y WCAG Coverage Matrix. Consultar Test Results de la misma edición para línea base de ejecución. Los seis archivos son editables.
 
-- REF-01: Contrato aprobado incorporado. Solo documentación para qa-saucedemo-portfolio: 15 tests funcionales existentes con Java 25, Selenium, TestNG, Maven, Page Object Model y Allure. Alcance inicial: Login → Products → Cart → Checkout Information → Checkout Overview → Checkout Complete, incluidos errores definidos, cambios del carrito y menú lateral abierto. Exactamente seis casos automatizados con trece escaneos obligatorios, diez categorías manuales, cuatro hojas por workbook y cincuenta y cinco criterios WCAG 2.2 A/AA; selecciones Maven futuras: Functional=15, Accessibility=6, All=21. Se excluyen catálogos adicionales dinámicos/largo, detalle, Slider/Spinner, generación del PDF y accesibilidad del PDF generado; se incluye el control PDF renderizado. Conservar clasificación provisional 37 Applicable / 18 To Be Confirmed, línea base Not Executed / Not Evaluated, dimensiones de estado separadas y equivalencia bilingüe. No implica implementación, evidencia de ejecución ni conformidad.
+- REF-01 (línea base histórica del 2026-10-08): Contrato aprobado incorporado. Solo documentación para qa-saucedemo-portfolio: 15 tests funcionales existentes con Java 25, Selenium, TestNG, Maven, Page Object Model y Allure. Alcance inicial: Login → Products → Cart → Checkout Information → Checkout Overview → Checkout Complete, incluidos errores definidos, cambios del carrito y menú lateral abierto. Exactamente seis casos automatizados con trece escaneos obligatorios, diez categorías manuales, cuatro hojas por workbook y cincuenta y cinco criterios WCAG 2.2 A/AA; selecciones Maven futuras: Functional=15, Accessibility=6, All=21. Se excluyen catálogos adicionales dinámicos/largo, detalle, Slider/Spinner, generación del PDF y accesibilidad del PDF generado; se incluye el control PDF renderizado. Conservar clasificación provisional 37 Applicable / 18 To Be Confirmed, línea base Not Executed / Not Evaluated, dimensiones de estado separadas y equivalencia bilingüe. No implica implementación, evidencia de ejecución ni conformidad.
 - REF-02: Línea base técnica histórica incorporada, no verificación actual. §1 Observaciones del proyecto: 15 tests funcionales; Selenium 4.49.0, TestNG 7.12.0, Allure TestNG 3.0.0 y Surefire 3.5.6; sin integración axe ni selecciones independientes de suites. El listener funcional registra captura/URL de fallo, no datos axe; DriverFactory restringe asistencia del administrador de contraseñas. §2 Observaciones estáticas: lang=en, título Swag Labs, imágenes de productos/confirmación y controles gráficos, cambios de badge/nombre del carrito, menú/submenú, validación obligatoria y errores role=alert con control para descartarlos. Se reportaron cookie de sesión de 600 segundos y rutas protegidas; Slider excluido actualiza cada dos segundos y Spinner usa role=status. Confirmación renderiza un control PDF de forma condicional. La WCAG Coverage Matrix reproduce observaciones por criterio y límites de alcance; no son resultados de estados renderizados. La interacción en navegador no estuvo disponible y no se registraron fecha ni referencia de versión inspeccionada. §3 Credenciales públicas de demo y datos sintéticos de checkout se reproducen en Test Data. No se verifican nuevamente estas observaciones históricas en esta revisión; REF-03 proporciona requisitos normativos públicos.
 - REF-03: [Especificación W3C WCAG 2.2](https://www.w3.org/TR/WCAG22/), consultada el 2026-10-08 para nombres, niveles y requisitos normativos.
-- REF-04: [Reglas de axe-core](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md) y [API de axe-core](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md). La relación futura usará la versión seleccionada, no una rama de desarrollo sin fijar.
+- REF-04: [Reglas de axe-core](https://github.com/dequelabs/axe-core/blob/v4.13.0/doc/rule-descriptions.md) y [API de axe-core](https://github.com/dequelabs/axe-core/blob/v4.13.0/doc/API.md). Inventario verificado con la versión fijada 4.13.0; las relaciones de criterios siguen siendo cobertura parcial.
