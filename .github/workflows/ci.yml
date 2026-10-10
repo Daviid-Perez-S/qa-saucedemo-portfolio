@@ -41,3 +41,19 @@ jobs:
 
       - name: Run functional tests (headless)
         run: mvn --batch-mode --no-transfer-progress clean test -Dheadless=true
+
+      - name: Generate Allure report
+        if: ${{ !cancelled() }}
+        run: mvn --batch-mode --no-transfer-progress allure:report
+
+      - name: Upload functional evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: functional-evidence
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            target/surefire-reports/
+            target/allure-results/
+            target/allure-report/
