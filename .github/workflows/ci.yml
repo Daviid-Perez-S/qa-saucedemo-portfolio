@@ -1,0 +1,40 @@
+name: SauceDemo CI
+
+on:
+  push:
+    branches:
+      - feature/github-actions-ci
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  environment-check:
+    name: Check Java, Maven and Chrome
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Java 25 and Maven cache
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+          cache-dependency-path: pom.xml
+
+      - name: Verify environment
+        shell: bash
+        run: |
+          test -f pom.xml
+          java --version
+          javac --version | grep -E '^javac 25([.]|$)'
+          mvn --version
+          google-chrome --version
