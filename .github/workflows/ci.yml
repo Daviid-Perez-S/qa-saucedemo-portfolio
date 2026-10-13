@@ -1,0 +1,111 @@
+name: SauceDemo CI
+
+on:
+  push:
+    branches:
+      - feature/github-actions-ci
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  environment-check:
+    name: Check Java, Maven and Chrome
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Java 25 and Maven cache
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+          cache-dependency-path: pom.xml
+
+      - name: Verify environment
+        shell: bash
+        run: |
+          test -f pom.xml
+          java --version
+          javac --version | grep -E '^javac 25([.]|$)'
+          mvn --version
+          google-chrome --version
+
+      - name: Run functional tests (headless)
+        run: mvn --batch-mode --no-transfer-progress clean test -Dheadless=true
+
+      - name: Validate functional evidence
+        if: ${{ !cancelled() }}
+        run: python3 scripts/validate-ci-evidence.py functional
+
+      - name: Generate Allure report
+        if: ${{ !cancelled() }}
+        run: mvn --batch-mode --no-transfer-progress allure:report
+
+      - name: Upload functional evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: functional-evidence
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            target/surefire-reports/
+            target/allure-results/
+            target/allure-report/
+
+  accessibility:
+    name: Accessibility tests
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Java 25 and Maven cache
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+          cache-dependency-path: pom.xml
+
+      - name: Verify environment
+        shell: bash
+        run: |
+          test -f pom.xml
+          java --version
+          javac --version | grep -E '^javac 25([.]|$)'
+          mvn --version
+          google-chrome --version
+
+      - name: Run accessibility tests (headless)
+        run: mvn --batch-mode --no-transfer-progress clean test "-Dtest=AccessibilityTest" -Dheadless=true
+
+      - name: Validate accessibility evidence
+        if: ${{ !cancelled() }}
+        run: python3 scripts/validate-ci-evidence.py accessibility
+
+      - name: Generate Allure report
+        if: ${{ !cancelled() }}
+        run: mvn --batch-mode --no-transfer-progress allure:report
+
+      - name: Upload accessibility evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: accessibility-evidence
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            target/surefire-reports/
+            target/allure-results/
+            target/allure-report/

@@ -4,7 +4,7 @@ Proyecto inicial de portafolio QA para planear y automatizar los flujos principa
 
 Esta versión en español es complementaria; GitHub mostrará `README.md` en inglés como portada principal. [Ver README principal](README.md).
 
-**Responsable:** David Pérez · **Estado:** documentación QA preparada; los 15 casos funcionales iniciales están automatizados y verificados; reporting Allure y evidencia automática de fallos verificados; seis tests de accesibilidad y trece scans implementados y verificados.
+**Responsable:** David Pérez · **Estado:** los 15 tests funcionales iniciales y seis tests de accesibilidad (trece scans) están automatizados y verificados; CI con GitHub Actions, reportes Allure y artifacts de evidencia separados verificados en `feature/github-actions-ci`; integración a `master` pendiente.
 
 ## Objetivos del proyecto
 
@@ -12,7 +12,7 @@ Esta versión en español es complementaria; GitHub mostrará `README.md` en ing
 - Construir un proyecto mantenible de automatización de interfaz con Java, Maven, Selenium WebDriver, TestNG y Page Object Model.
 - Automatizar los 15 casos acordados y registrar resultados y defectos cuando se encuentren.
 - Generar reportes Allure con evidencia automática del navegador para tests fallidos.
-- Mantener las pruebas de accesibilidad automatizadas; incorporar CI/CD con GitHub Actions en una fase posterior.
+- Mantener las pruebas de accesibilidad automatizadas y la integración continua con GitHub Actions y evidencia verificable.
 
 API Testing se planea como proyecto de portafolio separado. El alcance inicial excluye rendimiento, seguridad, dispositivos móviles, pruebas exhaustivas en varios navegadores, backend y pagos reales.
 
@@ -25,9 +25,9 @@ API Testing se planea como proyecto de portafolio separado. El alcance inicial e
 
 ## Tecnologías actuales
 
-Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chrome · Allure Report
+Java · Maven · Selenium WebDriver · TestNG · Page Object Model · Google Chrome · Allure Report · GitHub Actions
 
-El entorno documentado actualmente es una laptop personal con Windows 11 25H2 y Google Chrome 154.0.8037.99. La versión de Chrome es una referencia temporal y puede cambiar.
+El entorno local documentado es una laptop personal con Windows 11 25H2 y Google Chrome 154.0.8037.99. CI utiliza runners Ubuntu 24.04 proporcionados por GitHub, Temurin Java 25, Maven y Chrome headless. Las versiones de Maven y Chrome provienen de la imagen del runner y se registran en cada ejecución; la versión local de Chrome es una referencia temporal y puede cambiar.
 
 ## Cobertura de Automatización
 
@@ -117,6 +117,12 @@ mvn clean test
 
 Los resultados estándar de ejecución están disponibles en `target/surefire-reports/`.
 
+Chrome abre con interfaz gráfica por defecto. Agregar `"-Dheadless=true"` a cualquier comando de tests permite ejecutar sin una ventana visible del navegador, como en CI:
+
+```shell
+mvn clean test "-Dheadless=true"
+```
+
 ## Reporting Allure y evidencia de fallos
 
 Los resultados originales de Allure se escriben en `target/allure-results/`. Generar el reporte HTML después de ejecutar los tests:
@@ -132,6 +138,14 @@ mvn allure:serve
 ```
 
 Detener el servidor con `Ctrl+C`. El plugin descarga su runtime privado de Node.js y el paquete de Allure Report en `.allure/` durante el primer uso; esa descarga requiere internet, pero no necesita una instalación global de Node.js. Git ignora la caché del runtime y los resultados/reportes generados. El historial del reporte está inicialmente desactivado con `historyEnabled=false`.
+
+Visualizar los reportes mediante un servidor HTTP local en lugar de abrir `index.html` directamente. Para un reporte descargado de CI, extraer el artifact y servir su carpeta `allure-report/`. En Windows, el runtime privado existente permite servirlo sin Python ni una instalación global de Node.js (las rutas siguientes corresponden a la caché local actual; ajustarlas si cambia):
+
+```powershell
+& ".allure/node-v24.14.1-win-x64/node.exe" ".allure/allure-3.20.0/node_modules/allure/cli.js" open "C:/ruta/al/artifact-extraido/allure-report"
+```
+
+Ejecutar desde la raíz del proyecto después de que el plugin Maven haya inicializado `.allure/`; detener el servidor con `Ctrl+C`.
 
 Si una ejecución falla, ejecutar el comando de reporte por separado sin ejecutar `clean` entre ambos, para conservar sus resultados y evidencia. Utilizar `mvn clean test` para una ejecución nueva y evitar mezclar resultados de distintas ejecuciones.
 
@@ -152,9 +166,37 @@ mvn clean test "-Dtest=*Test"
 
 Los modos Functional / Accessibility / All produjeron respectivamente 15 / 6 / 21 resultados TestNG y Allure el 2026-10-09. Las ejecuciones finales completaron los trece estados con cero violaciones y errores técnicos. Hay cuatro estados con color-contrast incomplete pendientes de revisión humana; no se declara conformidad WCAG.
 
-AccessibilityAudit mantiene configuración, validación de estados/resultados y aserción final. AccessibilityEvidenceListener adjunta JSON por scan y manifiesto por caso, también en PASS; el listener de fallo mantiene captura/URL sin duplicación. No se cambió BaseTest ni los quince tests funcionales. Las variantes consecutivas de checkout usan borrado por teclado para actualizar el estado del formulario. Surefire permanece en 3.5.6, sin perfiles ni ejecución paralela. Las diez categorías manuales siguen Planned / Not Executed.
+AccessibilityAudit mantiene configuración, validación de estados/resultados y aserción final. AccessibilityEvidenceListener adjunta JSON por scan y manifiesto por caso, también en PASS; el listener de fallo mantiene captura/URL sin duplicación. No se cambió BaseTest ni los quince tests funcionales. Las variantes consecutivas de checkout usan borrado por teclado para actualizar el estado del formulario. Surefire permanece en 3.5.6, sin perfiles ni ejecución paralela de tests. La evaluación manual de accesibilidad queda pospuesta indefinidamente; las diez categorías manuales siguen Planned / Not Executed. El éxito automatizado no certifica conformidad WCAG y los resultados `incomplete` siguen pendientes de revisión humana.
 
 [Resultados y limitaciones](docs/accessibility/accessibility-test-results-spanish.md) · [Resumen verificable](docs/accessibility/accessibility-execution-summary.json).
+
+## Integración continua
+
+[`SauceDemo CI`](.github/workflows/ci.yml) prepara el entorno, ejecuta tests headless, valida la evidencia, genera reportes HTML Allure y sube artifacts. Las ejecuciones en `feature/github-actions-ci` se verificaron con 15 tests funcionales y seis de accesibilidad aprobados, cero fallos, errores u omitidos y trece scans completados. No hay despliegue ni publicación en GitHub Pages.
+
+Los triggers son push a `feature/github-actions-ci` o `master`, Pull Requests dirigidos a `master` y activación manual (`workflow_dispatch`). La activación manual mediante **Actions → SauceDemo CI → Run workflow** requiere que el workflow exista en la rama predeterminada del repositorio (`master`); queda pendiente de comprobar tras la integración. Consultar las [instrucciones de ejecución manual de GitHub](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
+
+Cada job tiene su propio runner Ubuntu 24.04, Temurin Java 25, caché de dependencias Maven cuya clave utiliza `pom.xml` y Chrome. El workflow concede únicamente `contents: read`.
+
+| ID del job / nombre mostrado | Comando de tests | Tests esperados | Artifact |
+|---|---|---|---|
+| `environment-check` / Check Java, Maven and Chrome | `mvn --batch-mode --no-transfer-progress clean test -Dheadless=true` | 15 funcionales | `functional-evidence` |
+| `accessibility` / Accessibility tests | `mvn --batch-mode --no-transfer-progress clean test "-Dtest=AccessibilityTest" -Dheadless=true` | 6 de accesibilidad, 13 scans | `accessibility-evidence` |
+
+Los jobs no tienen dependencia `needs` y pueden ejecutarse simultáneamente. Los tests siguen siendo secuenciales dentro de cada job, con un navegador nuevo por test. Son dos ejecuciones separadas de suites, con 21 tests en total; CI no ejecuta el modo Maven combinado.
+
+El [validador de evidencia compartido](scripts/validate-ci-evidence.py) utiliza únicamente la biblioteca estándar de Python, disponible en el runner. Los jobs lo invocan con `functional` o `accessibility`. Comprueba cantidades y resultados exitosos en los XML de Surefire; compara las identidades de tests con resultados Allure únicos y aprobados; verifica referencias de containers y adjuntos existentes y no vacíos, incluidos los anidados; y rechaza referencias duplicadas de adjuntos. En accesibilidad exige además trece scans únicos de los estados aprobados y seis manifiestos de una misma ejecución, metadatos de estados consistentes, preparación/scans completados, ausencia de errores técnicos o violaciones confirmadas y las cuatro categorías axe (`passes`, `violations`, `incomplete`, `inapplicable`). Informa las ocurrencias `incomplete` sin considerarlas conformidad demostrada. La evidencia faltante o inconsistente devuelve código de salida 1 y hace fallar el job.
+
+La validación, generación del reporte y subida de artifacts utilizan `if: ${{ !cancelled() }}` para intentarse después de fallos de tests o integridad, sin ocultarlos. Una ejecución cancelada no garantiza la conservación de evidencia. La generación Allure no ejecuta `clean`, conservando los resultados de tests.
+
+Para revisar una ejecución:
+
+1. Abrir [Actions → SauceDemo CI](https://github.com/Daviid-Perez-S/qa-saucedemo-portfolio/actions/workflows/ci.yml) y seleccionar el commit y evento correspondientes.
+2. Abrir el step de tests de cada job. Esperar `Tests run: 15` o `Tests run: 6`, con `Failures: 0, Errors: 0, Skipped: 0`, y comprobar el mensaje `Evidence integrity PASS` del validador. Abrir los steps fallidos para consultar los errores; Success por sí solo no sustituye la comprobación de cantidades.
+3. En **Artifacts**, dentro del resumen de la ejecución, descargar `functional-evidence` y `accessibility-evidence`. La retención es de 14 días. Ambos contienen `surefire-reports/`, `allure-results/` y `allure-report/`; los archivos del reporte dependen de que su generación termine correctamente.
+4. Revisar los `TEST-*.xml` de Surefire y visualizar el reporte HTML siguiendo las instrucciones de servidor local anteriores. Los resultados Allure funcionales contienen 15 archivos `*-result.json`; accesibilidad contiene seis resultados y 19 adjuntos JSON (13 scans y seis manifiestos). Los containers representan agrupaciones del ciclo de vida de TestNG, no tests adicionales; su cantidad no es un criterio de aceptación.
+
+Los checks del PR sobre el último commit y la ejecución en `master` quedan pendientes de verificar durante la integración. La revisión manual de accesibilidad y la certificación de conformidad WCAG quedan fuera de los criterios actuales de aceptación automatizada.
 
 ## Aplicación bajo prueba
 
