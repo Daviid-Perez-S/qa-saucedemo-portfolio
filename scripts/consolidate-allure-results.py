@@ -23,7 +23,7 @@ require = VALIDATOR.require
 unique = VALIDATOR.unique
 load_json = VALIDATOR.load_json
 attachments = VALIDATOR.attachments
-REPORT_METADATA = {"executor.json", "allure.properties"}
+REPORT_METADATA = {"executor.json", "allure.properties", "environment.properties"}
 
 
 def inventory(directory):

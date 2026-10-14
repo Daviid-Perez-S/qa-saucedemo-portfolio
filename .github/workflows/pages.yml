@@ -1,0 +1,180 @@
+name: Allure Pages
+run-name: "Allure Pages - CI #${{ github.event.workflow_run.run_number }} attempt ${{ github.event.workflow_run.run_attempt }} source ${{ github.event.workflow_run.id }}"
+
+on:
+  workflow_run:
+    workflows: [SauceDemo CI]
+    types: [completed]
+    branches: [master]
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  prepare:
+    name: Prepare validated Allure report
+    if: >-
+      github.repository == 'Daviid-Perez-S/qa-saucedemo-portfolio' &&
+      github.ref == 'refs/heads/master' &&
+      github.event.workflow_run.repository.full_name == github.repository &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.head_branch == 'master' &&
+      (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch') &&
+      (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      publish: ${{ steps.source.outputs.publish }}
+      run_id: ${{ steps.source.outputs.run_id }}
+      run_attempt: ${{ steps.source.outputs.run_attempt }}
+      functional_artifact: ${{ steps.source.outputs.functional_artifact }}
+      accessibility_artifact: ${{ steps.source.outputs.accessibility_artifact }}
+      pages_artifact: allure-pages-${{ github.run_id }}-${{ github.run_attempt }}
+
+    steps:
+      - name: Checkout trusted master code
+        uses: actions/checkout@v7
+        with:
+          ref: master
+          persist-credentials: false
+
+      - name: Verify original CI attempt, artifacts and publication history
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/pages-publication.py prepare --source "$RUNNER_TEMP/pages-source.json"
+
+      - name: Download original functional evidence
+        if: steps.source.outputs.publish == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ steps.source.outputs.functional_artifact }}
+          run-id: ${{ steps.source.outputs.run_id }}
+          repository: Daviid-Perez-S/qa-saucedemo-portfolio
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/evidence/functional
+          merge-multiple: true
+          digest-mismatch: error
+
+      - name: Download original accessibility evidence
+        if: steps.source.outputs.publish == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ steps.source.outputs.accessibility_artifact }}
+          run-id: ${{ steps.source.outputs.run_id }}
+          repository: Daviid-Perez-S/qa-saucedemo-portfolio
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/evidence/accessibility
+          merge-multiple: true
+          digest-mismatch: error
+
+      - name: Validate suites and consolidate original results
+        if: steps.source.outputs.publish == 'true'
+        run: >-
+          python3 scripts/consolidate-allure-results.py merge
+          --functional "$RUNNER_TEMP/evidence/functional"
+          --accessibility "$RUNNER_TEMP/evidence/accessibility"
+          --output "$GITHUB_WORKSPACE/target/allure-results"
+
+      - name: Add visible metadata from original CI
+        if: steps.source.outputs.publish == 'true'
+        run: >-
+          python3 scripts/pages-publication.py environment
+          --source "$RUNNER_TEMP/pages-source.json"
+          --results "$GITHUB_WORKSPACE/target/allure-results"
+
+      - name: Set up Java 25
+        if: steps.source.outputs.publish == 'true'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Generate consolidated Allure HTML
+        if: steps.source.outputs.publish == 'true'
+        env:
+          CI_RUN_ID: ${{ steps.source.outputs.run_id }}
+          CI_RUN_NUMBER: ${{ steps.source.outputs.run_number }}
+          CI_RUN_ATTEMPT: ${{ steps.source.outputs.run_attempt }}
+          CI_COMMIT: ${{ steps.source.outputs.commit }}
+        # These overrides apply only to Maven/Allure, never to the publisher's GitHub context.
+        run: |
+          env GITHUB_RUN_ID="$CI_RUN_ID" GITHUB_RUN_NUMBER="$CI_RUN_NUMBER" \
+            GITHUB_RUN_ATTEMPT="$CI_RUN_ATTEMPT" GITHUB_SHA="$CI_COMMIT" \
+            GITHUB_WORKFLOW="SauceDemo CI" GITHUB_JOB="consolidated" \
+            mvn --batch-mode --no-transfer-progress allure:report
+
+      - name: Verify rendered tests, states and attachment bytes
+        if: steps.source.outputs.publish == 'true'
+        run: >-
+          python3 scripts/consolidate-allure-results.py verify-report
+          --results "$GITHUB_WORKSPACE/target/allure-results"
+          --report "$GITHUB_WORKSPACE/target/allure-report"
+
+      - name: Add safe public CI origin record
+        if: steps.source.outputs.publish == 'true'
+        run: >-
+          python3 scripts/pages-publication.py report-origin
+          --source "$RUNNER_TEMP/pages-source.json"
+          --report "$GITHUB_WORKSPACE/target/allure-report"
+
+      - name: Upload verified Pages report only
+        if: steps.source.outputs.publish == 'true'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          name: allure-pages-${{ github.run_id }}-${{ github.run_attempt }}
+          path: target/allure-report
+          retention-days: 1
+
+  deploy:
+    name: Deploy Allure to GitHub Pages
+    needs: prepare
+    if: needs.prepare.result == 'success' && needs.prepare.outputs.publish == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # Hold this lock through both the final API check and the official deployment.
+    concurrency:
+      group: allure-pages-master
+      queue: max
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout trusted master code
+        uses: actions/checkout@v7
+        with:
+          ref: master
+          persist-credentials: false
+
+      - name: Configure existing GitHub Pages site
+        uses: actions/configure-pages@v5
+        with:
+          enablement: false
+
+      - name: Recheck original attempt and confirmed publications under deployment lock
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CI_FUNCTIONAL_ARTIFACT: ${{ needs.prepare.outputs.functional_artifact }}
+          CI_ACCESSIBILITY_ARTIFACT: ${{ needs.prepare.outputs.accessibility_artifact }}
+        run: python3 scripts/pages-publication.py gate
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        if: success() && !cancelled() && steps.gate.outputs.publish == 'true'
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ needs.prepare.outputs.pages_artifact }}

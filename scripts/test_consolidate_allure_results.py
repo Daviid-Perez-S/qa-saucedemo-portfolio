@@ -89,6 +89,7 @@ class ConsolidationContracts(unittest.TestCase):
             for item in (f, a):
                 FIXTURES.write_json(item.directory / "executor.json", {"name": "Synthetic partial report"})
                 (item.directory / "allure.properties").write_text("allure.results.directory=synthetic", encoding="utf-8")
+                (item.directory / "environment.properties").write_text("CI.run_number=synthetic-partial", encoding="utf-8")
         self.merge("metadata", after=metadata, code=0, message="metadata excluded explicitly")
 
     def test_failed_and_broken_results_are_preserved(self):
