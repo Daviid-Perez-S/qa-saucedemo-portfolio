@@ -1,46 +1,79 @@
-# Project Agent Instructions
+# Codex Repository Instructions
 
-## Project context
+## Project Scope
 
-- Project: SauceDemo QA Automation Portfolio.
-- Public repository: https://github.com/Daviid-Perez-S/qa-saucedemo-portfolio.
-- Application under test: https://www.saucedemo.com/.
-- Current stack: Java, Maven, Selenium WebDriver, TestNG, Page Object Model, and Allure Report.
-- The approved initial suite contains 15 functional test cases. Keep automation traceable to the approved test case IDs and keep the English and Spanish QA workbook editions aligned.
-- Current documented environment: personal laptop, Windows 11 25H2, and Google Chrome 154.0.8037.99 (verified 2026-10-09). Treat the Chrome version as a snapshot that may change.
-- API testing is a separate project. Allure reporting, automatic failure evidence and six accessibility tests with thirteen scans are implemented and verified. GitHub Actions CI is verified on `feature/github-actions-ci`; integration into `master` and verification of PR/default-branch/manual triggers remain pending. Manual accessibility evaluation is postponed indefinitely; incomplete findings do not establish or certify WCAG conformance.
+- Maintain the completed SauceDemo QA Automation Portfolio: Java 25, Maven, Selenium, TestNG, Page Object Model, axe-core, Allure, GitHub Actions and Pages.
+- Preserve the approved baseline: 15 functional tests, six accessibility tests containing 13 axe scans, and 21 tests total. For authorized coverage changes, update affected tests, validators, reporting expectations and bilingual QA documentation together.
+- Keep API testing in its separate project. Manual accessibility evaluation is postponed indefinitely, with no scheduled date; automated results alone do not establish WCAG 2.2 AA conformance.
 
-## Working guidelines
+## Agent Workflow and Authorization
 
-- Keep the implementation small, readable, and explainable. Avoid overengineering and unnecessary dependencies.
-- Inspect the repository structure and current implementation before proposing or making architectural changes.
-- Work incrementally; do not generate the complete framework in one step. Explain material design choices before changing architecture.
-- Do not add Cucumber, PageFactory, ThreadLocal, Selenium Grid, Docker, or Jenkins unless David explicitly changes the project scope.
-- Do not use `Thread.sleep()`; use explicit waits suited to the condition being checked.
-- In Codex, run browser-based Maven tests and Allure commands that open a browser or server with the required execution escalation, reusing existing approved command prefixes. These workflows need Chrome, network access, local connections, and caches outside the workspace; do not first attempt them in a session with restricted network access. Keep ordinary repository reads and edits sandboxed. If another command fails due to sandbox restrictions, retry through the approval mechanism; do not change application code, Windows ACLs, or firewall rules to bypass the sandbox.
-- Create Chrome through `DriverFactory.createChromeDriver()` so password manager settings stay consistent across tests. `BaseTest` centralizes only the common WebDriver lifecycle: a fresh browser and initial navigation per test, followed by `quit()` and clearing the driver reference. Keep scenario-specific preparation, Page Objects, and assertions in the concrete test classes; do not expand `BaseTest` beyond this responsibility without an agreed need.
-- `BaseTest.getDriver()` exposes the current instance's WebDriver to `FailureEvidenceListener`; keep reporting logic in the listener and preserve sequential execution with a fresh browser per test. Do not introduce parallel execution, a static driver, or a singleton.
-- Use Allure TestNG 3.0.0, Allure Maven Plugin 3.1.0, and Allure Report 3.20.0. Keep Maven Surefire Plugin at 3.5.6 for its native TestNG provider: with 3.6.0, the JUnit Platform TestNG engine's discovery dry runs generated 45 Allure results for the 15-test suite. Version 3.5.6 was verified to generate exactly 15 unique results without adapters or result filters.
-- Register `FailureEvidenceListener` centrally through ServiceLoader. Its `IInvokedMethodListener.afterInvocation()` captures only failed `@Test` methods, before Allure finalizes the result and before browser cleanup. Attempt a PNG screenshot and current URL independently; evidence errors must not replace or alter the original test failure. Keep tests and Page Objects free of reporting logic.
-- Let TestNG/Allure provide the exception, error message, and stack trace. Do not add manual error attachments, screenshots for successful tests, page source, console/network logs, video, reporting-only logging, or automatic retries. Configuration-method failures are reported by the adapter without browser evidence.
-- Store Allure results in `target/allure-results`, reports in `target/allure-report`, and keep `historyEnabled=false`. Generated `target/` content and the `.allure/` runtime cache stay ignored. Use `mvn clean test`, then `mvn allure:report` or `mvn allure:serve`; do not clean between a failed run and report generation.
-- Accessibility uses `com.deque.html.axe-core:selenium:4.13.0` with the bundled axe-core 4.13.0 engine. Exclude only WebDriverManager; Maven mediation selects the direct Selenium 4.49.0 dependency over its older transitive version. Retain DriverFactory/Selenium Manager. Keep exactly six TestNG methods and the thirteen approved state keys, using full-page scans and no impact/node suppression.
-- AccessibilityAudit owns the explicit WCAG A/AA configuration, state preparation/result integrity checks and aggregate decision. Enable target-size explicitly (disabled by default, not experimental), plus the five documented experimental WCAG rules. Retain all four result categories and keep incomplete human review separate from the automated outcome. Missing/invalid scans never PASS; any confirmed violation produces FAIL, preserving technical errors and later reachable scans.
-- AccessibilityEvidenceListener is registered through ServiceLoader and attaches scan JSONs and case manifests for passed and failed methods, including unexpected termination. Keep Allure calls out of tests/pages. Preserve original exceptions and leave FailureEvidenceListener unchanged; do not duplicate screenshots or standalone error attachments. A method-end screenshot is not evidence of every earlier scan state.
-- Surefire's default inclusion keeps `mvn clean test` functional (15). Use `mvn clean test "-Dtest=AccessibilityTest"` for accessibility (6), and `mvn clean test "-Dtest=*Test"` for all (21). Do not add profiles, suite XML, retries or parallel execution. Local validation archives under `.accessibility-verification/` are ignored and separate synthetic contract checks from real SauceDemo evidence.
-- CI uses two independent jobs in `.github/workflows/ci.yml`, each on Ubuntu 24.04 with Temurin Java 25, Maven cache and Chrome headless (`-Dheadless=true`); local Chrome remains graphical by default. Jobs may run simultaneously, but tests within each job stay sequential. Preserve `contents: read`, push triggers for `feature/github-actions-ci`/`master`, PRs targeting `master`, and `workflow_dispatch` (manual dispatch requires the workflow on the default branch).
-- Run `scripts/validate-ci-evidence.py functional` or `accessibility` after the corresponding suite; the shared Python standard-library validator requires 15/6 passed Surefire and Allure tests, valid unique references, and 13 accessibility scans/6 manifests with all four axe categories. Do not weaken validation or use `continue-on-error` to conceal failures. Attempt validation, Allure generation and upload after failures using `!cancelled()`, without cleaning results. Preserve separate `functional-evidence` and `accessibility-evidence` artifacts for 14 days; do not add deployment or GitHub Pages without authorization.
-- Allure Pages is implemented in a separate `workflow_run` workflow; real publication remains pending explicit approval. Keep `ci.yml` and its artifacts unchanged. Use trusted `master` code, verified original attempt/artifact IDs, `--publication` validation and consolidation before generating HTML. Publication ordering is monotonic by original `(run_number, run_attempt)` against confirmed successful `Deploy GitHub Pages` steps, not against the latest started CI. Later cancelled/invalid preparations do not block an older publishable candidate. Preserve the Pages run-name format and deploy job/step names used by `pages-publication.py`, including earlier successful publisher attempts. Keep the final API check and deployment inside the same `allure-pages-master` concurrency group, with `queue: max` and no automatic cancellation. Original CI metadata must remain visible; incomplete axe findings do not establish WCAG conformance. Do not delete Pages publication history used for ordering or add another publisher outside this protocol.
-- Do not invent SauceDemo behavior, requirements, or defects. Document defects only when they are observed.
-- Do not copy code from other repositories. Use external material as reference and write project-specific implementation.
-- Keep the English and Spanish project documents aligned when either version changes.
-- Do not commit, push, publish, or change GitHub settings unless David asks.
-- Update this file when project decisions or working conventions change; routine code progress does not require an automatic update.
+- Inspect existing code, configuration and working-tree changes before editing. Preserve user changes and limit edits to the authorized task.
+- Make small, coherent changes; reuse existing components and avoid unnecessary abstractions or dependencies. Do not copy code from other repositories.
+- Unless already explicitly authorized, propose architectural decisions or coverage expansions and obtain approval before implementing them. Do not request repeated confirmation for routine edits already authorized.
+- Do not introduce Cucumber, PageFactory, ThreadLocal, Selenium Grid, Docker or Jenkins without an explicitly approved scope change.
+- Do not create branches, commits or Pull Requests, push, deploy or change remote settings without explicit authorization. The user normally manages Git through GitHub Desktop.
+- Keep ordinary repository reads and edits sandboxed. Run browser-based Maven tests and Allure commands opening a browser/server with required execution escalation, reusing approved prefixes; do not first attempt these in a restricted-network session.
+- If another command fails because of sandbox restrictions, use the approval mechanism. Never alter application code, Windows ACLs or firewall rules to bypass restrictions.
+- Distinguish static inspection, tests actually executed and historical evidence. Report actual changes, checks, failures and unresolved limitations; never invent application behavior, requirements, defects or results.
+
+## Architecture and Browser Lifecycle
+
+- Preserve Page Object Model: pages own locators, navigation, interactions, explicit waits and state queries; concrete tests own scenario preparation and assertions; listeners own Allure reporting.
+- Create Chrome through `DriverFactory.createChromeDriver()`; preserve password-manager preferences and Selenium Manager. Keep local execution graphical by default and headless opt-in through `-Dheadless=true`.
+- Keep `BaseTest` limited to common WebDriver lifecycle: a fresh browser and initial navigation per test, followed by `quit()` and clearing the reference even after failures. Preserve `getDriver()` for evidence listeners.
+- Keep tests sequential and independent, without a static driver or singleton. Use condition-specific explicit waits; do not use `Thread.sleep()`.
+
+## Test Selection and Validation
+
+- Preserve the versions pinned in [pom.xml](pom.xml). Keep Surefire 3.5.6 with its native TestNG provider and one unique Allure result per test. Validate compatibility and result uniqueness for authorized dependency changes.
+- Preserve test-case IDs and meaningful assertions. Keep default Surefire inclusion functional and accessibility selection independent; do not introduce profiles, suite XML or automatic retries.
+
+| Selection | Command | Baseline tests |
+|---|---|---:|
+| Functional | `mvn clean test` | 15 |
+| Accessibility | `mvn clean test "-Dtest=AccessibilityTest"` | 6 |
+| Combined | `mvn clean test "-Dtest=*Test"` | 21 |
+
+- Match validation to changed contracts. Use static checks for documentation-only changes; run affected suites for behavioral changes, respecting task restrictions and execution permissions.
+- After the corresponding suite, run `python scripts/validate-ci-evidence.py functional` or `python scripts/validate-ci-evidence.py accessibility` (`python3` in CI). Validate separate suite outputs; the validator has no combined mode.
+- When changing evidence validation, consolidation or publication logic, run existing Python contract checks: `python -B -m unittest discover -s scripts -p "test_*.py"`. Keep synthetic checks separate from real SauceDemo execution evidence.
+
+## Accessibility Contracts
+
+- Preserve the approved case/state mapping in `AccessibilityTest` and [the validator](scripts/validate-ci-evidence.py), subject to authorized coverage changes. Use full-page scans without impact/node suppression or exclusions that hide violations.
+- Keep the axe Java integration and bundled engine aligned at 4.13.0; preserve the WebDriverManager-only exclusion and direct Selenium dependency. Coordinate authorized version changes with engine and evidence checks.
+- Preserve [AccessibilityAudit](src/test/java/com/david/qa/accessibility/AccessibilityAudit.java) configuration: WCAG A/AA tags, all five documented experimental rules and explicitly enabled `target-size` (disabled by default, not experimental).
+- Keep state preparation in tests; keep configuration, state/result integrity checks and aggregate decisions in AccessibilityAudit. Retain `passes`, `violations`, `incomplete` and `inapplicable` results.
+- Never PASS missing, unfinished or invalid scans. Confirmed violations produce FAIL, including mixed outcomes; retain technical errors, original diagnostics and later reachable scans.
+- Keep `incomplete` findings pending human review, separate from automated outcomes and manual evaluation. Do not interpret axe `inapplicable` as a confirmed WCAG applicability decision.
+
+## Reporting and Evidence
+
+- Register `FailureEvidenceListener` and `AccessibilityEvidenceListener` centrally through ServiceLoader; keep Allure calls out of tests and pages.
+- In `FailureEvidenceListener.afterInvocation()`, capture only failed `@Test` methods before Allure finalization and browser cleanup. Attempt PNG screenshot and current URL independently; capture errors must not replace or alter the original failure. Configuration failures receive no browser evidence.
+- Attach available accessibility scan JSONs and case manifests for passed and failed tests, including unexpected termination. Preserve original exceptions and mixed-outcome diagnostics; attachment errors must not turn failure into success.
+- Do not duplicate screenshots or add standalone error attachments. Let TestNG/Allure supply exception details. Do not add successful-test screenshots, page source, console/network logs, video or reporting-only logging. A method-end screenshot does not prove earlier scan states.
+- Store results in `target/allure-results` and HTML in `target/allure-report`; preserve `historyEnabled=false`. Keep `target/`, `.allure/` and `.accessibility-verification/` ignored.
+- Start fresh runs with `clean test`; preserve evidence before another run. Generate reports with `mvn allure:report` or `mvn allure:serve` without an intervening `clean`, especially after failures.
+
+## CI and Pages Publication
+
+- Keep [SauceDemo CI](.github/workflows/ci.yml) separate from [Allure Pages](.github/workflows/pages.yml). Preserve CI's two independent Ubuntu 24.04/Temurin Java 25 jobs, Maven cache and headless Chrome. Jobs may overlap; tests within each job remain sequential.
+- Preserve CI `contents: read`, push triggers for `feature/github-actions-ci`/`master`, PRs targeting `master` and `workflow_dispatch`; manual dispatch requires the workflow on the default branch.
+- Keep strict CI acceptance separate from `--publication` eligibility: CI requires passed tests; publication permits documented `failed`/`broken` results but rejects skipped tests, incomplete scans and inconsistent evidence. Never weaken validation or hide failures with `continue-on-error`.
+- Require unique, consistent Surefire/Allure identities and attachment references, all approved scans and one manifest per accessibility case.
+- Attempt validation, Allure generation and upload after failures using `!cancelled()`, without cleaning results. Preserve `functional-evidence` and `accessibility-evidence`, their contents and 14-day retention.
+- Publish only eligible completed `push`/`workflow_dispatch` CI attempts from the authorized repository's `master` through `workflow_run`. Preserve existing Pages permissions; use trusted `master` code and verify original attempt/artifact identities before publication validation and consolidation.
+- Preserve original result and attachment bytes during consolidation; reject identity/filename collisions and inconsistent evidence. Verify rendered results and attachment bytes before deployment; retain safe original CI metadata.
+- Treat workflow, job, step, artifact names and run-name formats consumed by [publication checks](scripts/pages-publication.py) as interfaces. Update consumers and contract checks together for authorized changes.
+- Order publication by original `(run_number, run_attempt)` against confirmed successful `Deploy GitHub Pages` steps, including earlier successful publisher attempts. Later cancelled or invalid preparations must not block an older publishable candidate.
+- Keep the final API gate and deployment under the same `allure-pages-master` concurrency group with `queue: max` and `cancel-in-progress: false`. Do not delete ordering history or add a publisher outside this protocol.
+- Never equate successful publication with successful tests or accessibility conformance.
 
 ## Documentation Maintenance
 
-- Keep `README.md` and `README-spanish.md` synchronized.
-- When a test case is successfully automated and verified, update its status in the README automation coverage table and update the automation progress counter.
-- Do not duplicate detailed test steps, test data, or expected results in the README; keep those details in the QA test artifacts.
-- Keep implementation details separate from test coverage information.
-- Update documentation only when it reflects the actual verified state of the project.
+- Keep `README.md` primary in English and `README-spanish.md` semantically equivalent. Synchronize affected bilingual QA documents: coverage, IDs, commands, versions, links and limitations.
+- Update coverage summaries only for authorized, implemented and verified changes. Keep detailed cases, steps, data and expected results in existing QA artifacts; separate coverage from implementation details.
+- Verify relative references. Distinguish dated plans/execution baselines from current implementation; do not present historical results as permanent statistics or claim unexecuted manual work is complete.
+- Keep this file in English. Update it when approved project decisions or working conventions change, not for routine progress.
