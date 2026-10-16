@@ -193,4 +193,9 @@ The functional plan records the initial scope; dated documents describe historic
 - Coverage targets selected Chrome flows; external service availability and application changes can affect execution.
 - Performance, security, mobile, exhaustive cross-browser, backend and real-payment testing are outside scope. API testing belongs to a separate project.
 
+## License
+
+This project is licensed under the MIT License.
+See the [LICENSE](LICENSE) file for details.
+
 **Project owner:** [David Pérez](https://www.linkedin.com/in/david-perez-s/).
