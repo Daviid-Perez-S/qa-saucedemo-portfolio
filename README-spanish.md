@@ -19,6 +19,7 @@ Pruebas funcionales y de accesibilidad automatizada para SauceDemo, con Java, Se
 - [Integración continua y reportes](#integración-continua-y-reportes)
 - [Documentación de QA](#documentación-de-qa)
 - [Estado y limitaciones](#estado-y-limitaciones)
+- [Licencia](#licencia)
 
 ## Descripción general
 
@@ -192,5 +193,10 @@ El plan funcional registra el alcance inicial; los documentos fechados describen
 - Los resultados automatizados no establecen conformidad WCAG 2.2 AA ni constituyen una evaluación integral de accesibilidad. Los hallazgos `incomplete` requieren revisión humana.
 - La cobertura se centra en flujos seleccionados en Chrome; la disponibilidad del servicio externo y los cambios de la aplicación pueden afectar la ejecución.
 - Quedan fuera del alcance rendimiento, seguridad, dispositivos móviles, cobertura exhaustiva en varios navegadores, backend y pagos reales. Las pruebas API pertenecen a un proyecto separado.
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT.
+Consulta el archivo [LICENSE](LICENSE) para más información.
 
 **Responsable:** [David Pérez](https://www.linkedin.com/in/david-perez-s/).
