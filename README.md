@@ -19,6 +19,7 @@ Functional and automated accessibility testing for SauceDemo, with Java, Seleniu
 - [CI & Reporting](#ci--reporting)
 - [QA Documentation](#qa-documentation)
 - [Project Status & Limitations](#project-status--limitations)
+- [License](#license)
 
 ## Project Overview
 
